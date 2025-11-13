@@ -108,51 +108,78 @@ public class DocumentValidationService : IDocumentValidationService
     {
         var allText = string.Join(" ", result.ExtractedText).ToLower();
 
-        // Document classification based on keywords
-        if (ContainsPassportKeywords(allText))
-        {
-            result.DocumentType = "Passport";
-            result.Description = "This appears to be a passport document.";
-        }
-        else if (ContainsDriverLicenseKeywords(allText))
-        {
-            result.DocumentType = "Driver License / Driver's License";
-            result.Description = "This appears to be a driver's license document.";
-        }
-        else if (ContainsIdCardKeywords(allText))
-        {
-            result.DocumentType = "Identity Card / ID Card";
-            result.Description = "This appears to be an identity card document.";
-        }
-        else
+        // Document classification based on keyword scoring
+        var passportScore = CalculatePassportScore(allText);
+        var driverLicenseScore = CalculateDriverLicenseScore(allText);
+        var idCardScore = CalculateIdCardScore(allText);
+
+        // Choose the type with the highest score
+        var maxScore = Math.Max(passportScore, Math.Max(driverLicenseScore, idCardScore));
+        
+        if (maxScore == 0)
         {
             result.DocumentType = "Unknown Document Type";
             result.Description = "The document type could not be determined automatically. Manual review may be required.";
         }
+        else if (passportScore == maxScore)
+        {
+            result.DocumentType = "Passport";
+            result.Description = "This appears to be a passport document.";
+        }
+        else if (driverLicenseScore == maxScore)
+        {
+            result.DocumentType = "Driver License / Driver's License";
+            result.Description = "This appears to be a driver's license document.";
+        }
+        else
+        {
+            result.DocumentType = "Identity Card / ID Card";
+            result.Description = "This appears to be an identity card document.";
+        }
     }
 
-    private bool ContainsPassportKeywords(string text)
+    private int CalculatePassportScore(string text)
     {
-        var passportKeywords = new[] { "passport", "pasaporte", "passeport", "reisepass", "passaporto", 
-                                       "nationality", "date of birth", "place of birth", "issuing authority",
-                                       "passport no", "passport number", "p<" };
-        return passportKeywords.Any(keyword => text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        var score = 0;
+        // High-value passport-specific keywords
+        if (text.Contains("passport", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("pasaporte", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("passeport", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("passport no", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("passport number", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("type: p", StringComparison.OrdinalIgnoreCase)) score += 3;
+        if (text.Contains("p<", StringComparison.OrdinalIgnoreCase)) score += 3;
+        return score;
     }
 
-    private bool ContainsDriverLicenseKeywords(string text)
+    private int CalculateDriverLicenseScore(string text)
     {
-        var dlKeywords = new[] { "driver license", "driver's license", "driving license", "licencia de conducir",
-                                 "permis de conduire", "führerschein", "class", "restrictions", "endorsements",
-                                 "dl no", "license number", "operator", "dl class" };
-        return dlKeywords.Any(keyword => text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        var score = 0;
+        // High-value driver license-specific keywords
+        if (text.Contains("driver license", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("driver's license", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("driving license", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("dl number", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("dl no", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("class:", StringComparison.OrdinalIgnoreCase)) score += 3;
+        if (text.Contains("restrictions:", StringComparison.OrdinalIgnoreCase)) score += 3;
+        if (text.Contains("endorsements:", StringComparison.OrdinalIgnoreCase)) score += 3;
+        if (text.Contains("operator", StringComparison.OrdinalIgnoreCase)) score += 2;
+        return score;
     }
 
-    private bool ContainsIdCardKeywords(string text)
+    private int CalculateIdCardScore(string text)
     {
-        var idKeywords = new[] { "identity card", "identification card", "id card", "national id",
-                                 "cedula", "carte d'identité", "personalausweis", "carta d'identità",
-                                 "id no", "id number", "identification number" };
-        return idKeywords.Any(keyword => text.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        var score = 0;
+        // High-value ID card-specific keywords
+        if (text.Contains("identity card", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("identification card", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("id card", StringComparison.OrdinalIgnoreCase)) score += 10;
+        if (text.Contains("national id", StringComparison.OrdinalIgnoreCase)) score += 8;
+        if (text.Contains("id number", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("id no", StringComparison.OrdinalIgnoreCase)) score += 5;
+        if (text.Contains("identification number", StringComparison.OrdinalIgnoreCase)) score += 5;
+        return score;
     }
 
     private void ExtractCriticalData(DocumentValidationResult result)
