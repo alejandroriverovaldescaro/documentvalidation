@@ -5,6 +5,7 @@ A Blazor Server application for validating and extracting information from ident
 ## Features
 
 - **Document Upload**: Support for PDF and image files (PNG, JPG, JPEG)
+- **OCR Text Extraction**: Uses Tesseract OCR to extract text from images (passports, IDs, licenses)
 - **Document Type Detection**: Automatically identifies:
   - Passports
   - Driver's Licenses
@@ -21,6 +22,7 @@ A Blazor Server application for validating and extracting information from ident
 
 - **Blazor Server** (.NET 9.0) - Web framework
 - **iText7** - PDF text extraction
+- **Tesseract OCR** - Image text extraction (free, open-source OCR engine)
 - **SixLabors.ImageSharp** - Image processing and validation
 - **Bootstrap** - UI styling
 - **Bootstrap Icons** - Icons
@@ -53,6 +55,17 @@ A Blazor Server application for validating and extracting information from ident
    ```bash
    dotnet build
    ```
+
+5. **Download Tesseract language data for OCR** (required for image text extraction):
+   ```bash
+   cd wwwroot
+   mkdir tessdata
+   cd tessdata
+   curl -L -o eng.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata
+   cd ../..
+   ```
+   
+   Note: The eng.traineddata file is about 23MB and is required for OCR to work on images. Without it, the app will still work but won't extract text from images.
 
 ### Running the Application
 

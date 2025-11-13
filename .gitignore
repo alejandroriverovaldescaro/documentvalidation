@@ -60,3 +60,6 @@ yarn-error.log
 # Temporary files
 *.tmp
 *.temp
+
+# Tesseract language data files (download separately)
+**/tessdata/*.traineddata

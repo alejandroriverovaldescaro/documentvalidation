@@ -5,6 +5,7 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Text.RegularExpressions;
+using Tesseract;
 
 namespace DocumentValidationApp.Services;
 
@@ -15,6 +16,13 @@ public interface IDocumentValidationService
 
 public class DocumentValidationService : IDocumentValidationService
 {
+    private readonly string _tessDataPath;
+
+    public DocumentValidationService(IWebHostEnvironment environment)
+    {
+        _tessDataPath = Path.Combine(environment.WebRootPath, "tessdata");
+    }
+
     public async Task<DocumentValidationResult> ValidateDocumentAsync(Stream fileStream, string fileName, string contentType)
     {
         var result = new DocumentValidationResult();
@@ -93,10 +101,57 @@ public class DocumentValidationService : IDocumentValidationService
             result.ValidationMessages.Add($"Dimensions: {image.Width}x{image.Height} pixels");
             result.ValidationMessages.Add($"Image format detected and validated successfully.");
             
-            // For images, we'll provide basic information
-            // In a real-world scenario, you would integrate with an OCR service
-            result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
-            result.ExtractedText.Add("Note: For advanced text extraction from images, consider integrating with OCR services like Azure Computer Vision or Google Cloud Vision API.");
+            // Perform OCR using Tesseract
+            try
+            {
+                // Save image to temporary file for Tesseract processing
+                var tempImagePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
+                await image.SaveAsPngAsync(tempImagePath);
+
+                try
+                {
+                    // Check if tessdata exists
+                    if (!Directory.Exists(_tessDataPath) || !File.Exists(Path.Combine(_tessDataPath, "eng.traineddata")))
+                    {
+                        result.ValidationMessages.Add("⚠️ OCR language data not found. Text extraction from images is limited.");
+                        result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                        result.ExtractedText.Add("Note: To enable text extraction from images, download eng.traineddata from https://github.com/tesseract-ocr/tessdata and place it in wwwroot/tessdata/");
+                    }
+                    else
+                    {
+                        using var engine = new TesseractEngine(_tessDataPath, "eng", EngineMode.Default);
+                        using var tesseractImage = Pix.LoadFromFile(tempImagePath);
+                        using var page = engine.Process(tesseractImage);
+                        
+                        var extractedText = page.GetText();
+                        
+                        if (!string.IsNullOrWhiteSpace(extractedText))
+                        {
+                            result.ExtractedText.Add(extractedText.Trim());
+                            result.ValidationMessages.Add($"✓ Text successfully extracted from image using OCR (Confidence: {page.GetMeanConfidence():P0})");
+                        }
+                        else
+                        {
+                            result.ValidationMessages.Add("⚠️ No text could be extracted from the image. Image may be too low quality or contain no text.");
+                            result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                        }
+                    }
+                }
+                finally
+                {
+                    // Clean up temporary file
+                    if (File.Exists(tempImagePath))
+                    {
+                        File.Delete(tempImagePath);
+                    }
+                }
+            }
+            catch (Exception ocrEx)
+            {
+                result.ValidationMessages.Add($"⚠️ OCR processing failed: {ocrEx.Message}");
+                result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                result.ExtractedText.Add("Note: Text extraction from image failed. The image may need preprocessing or higher quality.");
+            }
         }
         catch (Exception ex)
         {

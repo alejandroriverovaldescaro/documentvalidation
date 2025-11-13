@@ -1,4 +1,6 @@
 using DocumentValidationApp.Services;
+using Microsoft.AspNetCore.Hosting;
+using Moq;
 using Xunit;
 
 namespace DocumentValidationApp.Tests;
@@ -6,10 +8,13 @@ namespace DocumentValidationApp.Tests;
 public class DocumentValidationServiceTests
 {
     private readonly DocumentValidationService _service;
+    private readonly Mock<IWebHostEnvironment> _mockEnvironment;
 
     public DocumentValidationServiceTests()
     {
-        _service = new DocumentValidationService();
+        _mockEnvironment = new Mock<IWebHostEnvironment>();
+        _mockEnvironment.Setup(e => e.WebRootPath).Returns("/tmp/testwwwroot");
+        _service = new DocumentValidationService(_mockEnvironment.Object);
     }
 
     [Fact]
