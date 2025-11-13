@@ -1,0 +1,236 @@
+@page "/document-validation"
+@rendermode InteractiveServer
+@using DocumentValidationApp.Models
+@using DocumentValidationApp.Services
+@inject IDocumentValidationService ValidationService
+
+<PageTitle>Document Validation</PageTitle>
+
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="bi bi-file-earmark-check"></i> Document Validation
+    </h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Document for Validation</h5>
+                    <p class="text-muted">
+                        Upload a document (PDF, PNG, JPG, JPEG) to validate its type and extract key information.
+                        Supported documents: Passport, Driver's License, ID Card.
+                    </p>
+
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">Select Document</label>
+                        <InputFile OnChange="HandleFileSelected" 
+                                   class="form-control" 
+                                   id="fileInput" 
+                                   accept=".pdf,.png,.jpg,.jpeg" />
+                        <div class="form-text">
+                            Accepted formats: PDF, PNG, JPG, JPEG (Max size: 10MB)
+                        </div>
+                    </div>
+
+                    @if (isProcessing)
+                    {
+                        <div class="alert alert-info">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            Processing document... Please wait.
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="ClearError"></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm bg-light">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> How it works</h6>
+                    <ol class="small">
+                        <li>Upload your document</li>
+                        <li>The system analyzes the file</li>
+                        <li>Document type is identified</li>
+                        <li>Key data is extracted (dates, numbers)</li>
+                        <li>Validation results are displayed</li>
+                    </ol>
+                    <hr />
+                    <h6 class="card-title"><i class="bi bi-shield-check"></i> Privacy</h6>
+                    <p class="small text-muted">
+                        Documents are processed in memory and not stored on the server.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (validationResult != null && validationResult.IsValid)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Validation Results
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary">Document Information</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th width="40%">Document Type:</th>
+                                            <td><span class="badge bg-primary">@validationResult.DocumentType</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Description:</th>
+                                            <td>@validationResult.Description</td>
+                                        </tr>
+                                        @if (!string.IsNullOrEmpty(validationResult.DocumentNumber))
+                                        {
+                                            <tr>
+                                                <th>Document Number:</th>
+                                                <td><code>@validationResult.DocumentNumber</code></td>
+                                            </tr>
+                                        }
+                                        @if (!string.IsNullOrEmpty(validationResult.ExpirationDate))
+                                        {
+                                            <tr>
+                                                <th>Expiration Date:</th>
+                                                <td><strong>@validationResult.ExpirationDate</strong></td>
+                                            </tr>
+                                        }
+                                        @if (!string.IsNullOrEmpty(validationResult.IssuingAuthority))
+                                        {
+                                            <tr>
+                                                <th>Issuing Authority:</th>
+                                                <td>@validationResult.IssuingAuthority</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="text-primary">Validation Messages</h6>
+                                @if (validationResult.ValidationMessages.Any())
+                                {
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var message in validationResult.ValidationMessages)
+                                        {
+                                            <li class="list-group-item">@message</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No validation messages.</p>
+                                }
+                            </div>
+                        </div>
+
+                        @if (validationResult.ExtractedText.Any())
+                        {
+                            <div class="mt-3">
+                                <h6 class="text-primary">Extracted Text</h6>
+                                <div class="card bg-light">
+                                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                        @foreach (var text in validationResult.ExtractedText)
+                                        {
+                                            <pre class="small mb-2">@text</pre>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (validationResult != null && !validationResult.IsValid)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-x-circle-fill me-2"></i>Validation Failed</h5>
+                    <p>@validationResult.ErrorMessage</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private DocumentValidationResult? validationResult;
+    private bool isProcessing = false;
+    private string? errorMessage;
+    private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        errorMessage = null;
+        validationResult = null;
+        isProcessing = true;
+
+        try
+        {
+            var file = e.File;
+
+            // Validate file size
+            if (file.Size > MaxFileSize)
+            {
+                errorMessage = $"File size exceeds the maximum allowed size of 10MB. Your file is {file.Size / 1024 / 1024:F2}MB.";
+                return;
+            }
+
+            // Validate file type
+            var allowedExtensions = new[] { ".pdf", ".png", ".jpg", ".jpeg" };
+            var fileExtension = Path.GetExtension(file.Name).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                errorMessage = "Invalid file type. Please upload PDF or image files (PNG, JPG, JPEG).";
+                return;
+            }
+
+            // Process the file
+            using var stream = file.OpenReadStream(MaxFileSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            validationResult = await ValidationService.ValidateDocumentAsync(
+                memoryStream,
+                file.Name,
+                file.ContentType
+            );
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error processing file: {ex.Message}";
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void ClearError()
+    {
+        errorMessage = null;
+    }
+}
