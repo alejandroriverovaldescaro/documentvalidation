@@ -56,16 +56,27 @@ A Blazor Server application for validating and extracting information from ident
    dotnet build
    ```
 
-5. **Download Tesseract language data for OCR** (required for image text extraction):
+5. **Setup Tesseract OCR** (required for image text extraction):
+   
+   **Option 1: Automated Setup (Recommended)**
+   ```bash
+   # Linux/Mac
+   ./setup-ocr.sh
+   
+   # Windows (PowerShell)
+   .\setup-ocr.ps1
+   ```
+   
+   **Option 2: Manual Setup**
    ```bash
    cd wwwroot
-   mkdir tessdata
+   mkdir -p tessdata
    cd tessdata
    curl -L -o eng.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata
    cd ../..
    ```
    
-   Note: The eng.traineddata file is about 23MB and is required for OCR to work on images. Without it, the app will still work but won't extract text from images.
+   **Note:** The `eng.traineddata` file (~23MB) is required for OCR to extract text from images. Without it, the app will display a helpful message with download instructions.
 
 ### Running the Application
 
