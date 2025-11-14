@@ -7,27 +7,27 @@
 <PageTitle>Document Validation</PageTitle>
 
 <div class="container mt-4">
-    <h1 class="mb-4">
+    <h1 class="mb-4" style="color: #0066CC; font-weight: 600;">
         <i class="bi bi-file-earmark-check"></i> Document Validation
     </h1>
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Upload Document for Validation</h5>
-                    <p class="text-muted">
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">Upload Document for Validation</div>
+                <div class="dashboard-card-content">
+                    <p class="text-secondary">
                         Upload a document (PDF, PNG, JPG, JPEG) to validate its type and extract key information.
                         Supported documents: Passport, Driver's License, ID Card.
                     </p>
 
                     <div class="mb-3">
-                        <label for="fileInput" class="form-label">Select Document</label>
+                        <label for="fileInput" class="form-label font-weight-bold">Select Document</label>
                         <InputFile OnChange="HandleFileSelected" 
                                    class="form-control" 
                                    id="fileInput" 
                                    accept=".pdf,.png,.jpg,.jpeg" />
-                        <div class="form-text">
+                        <div class="form-text text-muted">
                             Accepted formats: PDF, PNG, JPG, JPEG (Max size: 10MB)
                         </div>
                     </div>
@@ -55,10 +55,12 @@
         </div>
 
         <div class="col-md-4">
-            <div class="card shadow-sm bg-light">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> How it works</h6>
-                    <ol class="small">
+            <div class="dashboard-card" style="background-color: #E6F2FF;">
+                <div class="dashboard-card-header">
+                    <i class="bi bi-info-circle"></i> How it works
+                </div>
+                <div class="dashboard-card-content">
+                    <ol style="font-size: 13px;">
                         <li>Upload your document</li>
                         <li>The system analyzes the file</li>
                         <li>Document type is identified</li>
@@ -66,8 +68,8 @@
                         <li>Validation results are displayed</li>
                     </ol>
                     <hr />
-                    <h6 class="card-title"><i class="bi bi-shield-check"></i> Privacy</h6>
-                    <p class="small text-muted">
+                    <h6 class="font-weight-bold"><i class="bi bi-shield-check"></i> Privacy</h6>
+                    <p style="font-size: 13px;" class="text-secondary">
                         Documents are processed in memory and not stored on the server.
                     </p>
                 </div>
@@ -79,22 +81,20 @@
     {
         <div class="row mt-4">
             <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            Validation Results
-                        </h5>
+                <div class="dashboard-card" style="border-left: 4px solid #4CAF50;">
+                    <div class="dashboard-card-header" style="background-color: #4CAF50; color: white; margin: -24px -24px 20px -24px; padding: 16px 24px; border-radius: 12px 12px 0 0;">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Validation Results
                     </div>
-                    <div class="card-body">
+                    <div class="dashboard-card-content">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="text-primary">Document Information</h6>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">Document Information</h6>
                                 <table class="table table-sm">
                                     <tbody>
                                         <tr>
                                             <th width="40%">Document Type:</th>
-                                            <td><span class="badge bg-primary">@validationResult.DocumentType</span></td>
+                                            <td><span class="badge" style="background-color: #0066CC; color: white;">@validationResult.DocumentType</span></td>
                                         </tr>
                                         <tr>
                                             <th>Description:</th>
@@ -126,13 +126,13 @@
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="text-primary">Validation Messages</h6>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">Validation Messages</h6>
                                 @if (validationResult.ValidationMessages.Any())
                                 {
                                     <ul class="list-group list-group-flush">
                                         @foreach (var message in validationResult.ValidationMessages)
                                         {
-                                            <li class="list-group-item">@message</li>
+                                            <li class="list-group-item" style="border: none; padding: 8px 0; font-size: 13px;">@message</li>
                                         }
                                     </ul>
                                 }
@@ -146,14 +146,12 @@
                         @if (validationResult.ExtractedText.Any())
                         {
                             <div class="mt-3">
-                                <h6 class="text-primary">Extracted Text</h6>
-                                <div class="card bg-light">
-                                    <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                                        @foreach (var text in validationResult.ExtractedText)
-                                        {
-                                            <pre class="small mb-2">@text</pre>
-                                        }
-                                    </div>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">Extracted Text</h6>
+                                <div class="rounded" style="background-color: #F8F9FA; padding: 16px; max-height: 300px; overflow-y: auto;">
+                                    @foreach (var text in validationResult.ExtractedText)
+                                    {
+                                        <pre style="font-size: 12px; margin-bottom: 8px;">@text</pre>
+                                    }
                                 </div>
                             </div>
                         }
@@ -166,7 +164,7 @@
     {
         <div class="row mt-4">
             <div class="col-12">
-                <div class="alert alert-danger">
+                <div class="alert alert-danger" style="border-left: 4px solid #DC3545;">
                     <h5><i class="bi bi-x-circle-fill me-2"></i>Validation Failed</h5>
                     <p>@validationResult.ErrorMessage</p>
                 </div>
