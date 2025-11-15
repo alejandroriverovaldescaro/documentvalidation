@@ -1,4 +1,5 @@
 using DocumentValidationApp.Services;
+using DocumentValidationApp.Models;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Xunit;
@@ -9,12 +10,17 @@ public class DocumentValidationServiceTests
 {
     private readonly DocumentValidationService _service;
     private readonly Mock<IWebHostEnvironment> _mockEnvironment;
+    private readonly Mock<IOllamaService> _mockOllamaService;
 
     public DocumentValidationServiceTests()
     {
         _mockEnvironment = new Mock<IWebHostEnvironment>();
         _mockEnvironment.Setup(e => e.WebRootPath).Returns("/tmp/testwwwroot");
-        _service = new DocumentValidationService(_mockEnvironment.Object);
+        
+        _mockOllamaService = new Mock<IOllamaService>();
+        _mockOllamaService.Setup(o => o.IsAvailableAsync()).ReturnsAsync(false);
+        
+        _service = new DocumentValidationService(_mockEnvironment.Object, _mockOllamaService.Object);
     }
 
     [Fact]
@@ -31,7 +37,7 @@ public class DocumentValidationServiceTests
         using var fileStream = File.OpenRead(pdfPath);
         
         // Act
-        var result = await _service.ValidateDocumentAsync(fileStream, "sample_passport.pdf", "application/pdf");
+        var result = await _service.ValidateDocumentAsync(fileStream, "sample_passport.pdf", "application/pdf", ProcessingMethod.TesseractOCR);
 
         // Assert
         Assert.True(result.IsValid);
@@ -53,7 +59,7 @@ public class DocumentValidationServiceTests
         using var fileStream = File.OpenRead(pdfPath);
         
         // Act
-        var result = await _service.ValidateDocumentAsync(fileStream, "sample_driver_license.pdf", "application/pdf");
+        var result = await _service.ValidateDocumentAsync(fileStream, "sample_driver_license.pdf", "application/pdf", ProcessingMethod.TesseractOCR);
 
         // Assert
         Assert.True(result.IsValid);
@@ -75,7 +81,7 @@ public class DocumentValidationServiceTests
         using var fileStream = File.OpenRead(pdfPath);
         
         // Act
-        var result = await _service.ValidateDocumentAsync(fileStream, "sample_id_card.pdf", "application/pdf");
+        var result = await _service.ValidateDocumentAsync(fileStream, "sample_id_card.pdf", "application/pdf", ProcessingMethod.TesseractOCR);
 
         // Assert
         Assert.True(result.IsValid);
@@ -90,7 +96,7 @@ public class DocumentValidationServiceTests
         using var stream = new MemoryStream();
         
         // Act
-        var result = await _service.ValidateDocumentAsync(stream, "test.txt", "text/plain");
+        var result = await _service.ValidateDocumentAsync(stream, "test.txt", "text/plain", ProcessingMethod.TesseractOCR);
 
         // Assert
         Assert.False(result.IsValid);

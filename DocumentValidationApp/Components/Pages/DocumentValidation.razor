@@ -22,6 +22,26 @@
                     </p>
 
                     <div class="mb-3">
+                        <label for="processingMethod" class="form-label font-weight-bold">
+                            <i class="bi bi-gear-fill"></i> Processing Method
+                        </label>
+                        <select id="processingMethod" class="form-select" @bind="selectedMethod">
+                            <option value="@ProcessingMethod.TesseractOCR">Tesseract OCR (Traditional text extraction)</option>
+                            <option value="@ProcessingMethod.OllamaVision">Ollama AI Vision (Qwen2-VL - Advanced image analysis)</option>
+                        </select>
+                        <div class="form-text text-muted">
+                            @if (selectedMethod == ProcessingMethod.TesseractOCR)
+                            {
+                                <span>Traditional OCR for text extraction from document images.</span>
+                            }
+                            else
+                            {
+                                <span>AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen2-vl:8b model.</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="fileInput" class="form-label font-weight-bold">Select Document</label>
                         <InputFile OnChange="HandleFileSelected" 
                                    class="form-control" 
@@ -38,7 +58,7 @@
                             <div class="spinner-border spinner-border-sm me-2" role="status">
                                 <span class="visually-hidden">Processing...</span>
                             </div>
-                            Processing document... Please wait.
+                            Processing document with @selectedMethod... Please wait.
                         </div>
                     }
 
@@ -61,6 +81,7 @@
                 </div>
                 <div class="dashboard-card-content">
                     <ol style="font-size: 13px;">
+                        <li>Select processing method</li>
                         <li>Upload your document</li>
                         <li>The system analyzes the file</li>
                         <li>Document type is identified</li>
@@ -68,9 +89,17 @@
                         <li>Validation results are displayed</li>
                     </ol>
                     <hr />
+                    <h6 class="font-weight-bold"><i class="bi bi-cpu-fill"></i> Processing Methods</h6>
+                    <div style="font-size: 13px;" class="text-secondary mb-2">
+                        <strong>Tesseract OCR:</strong> Fast, reliable text extraction
+                    </div>
+                    <div style="font-size: 13px;" class="text-secondary mb-2">
+                        <strong>Ollama Vision:</strong> Advanced AI analysis with better context understanding
+                    </div>
+                    <hr />
                     <h6 class="font-weight-bold"><i class="bi bi-shield-check"></i> Privacy</h6>
                     <p style="font-size: 13px;" class="text-secondary">
-                        Documents are processed in memory and not stored on the server.
+                        Documents are processed in memory and not stored on the server. Ollama runs locally on your machine.
                     </p>
                 </div>
             </div>
@@ -178,6 +207,7 @@
     private bool isProcessing = false;
     private string? errorMessage;
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
+    private ProcessingMethod selectedMethod = ProcessingMethod.TesseractOCR;
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -214,7 +244,8 @@
             validationResult = await ValidationService.ValidateDocumentAsync(
                 memoryStream,
                 file.Name,
-                file.ContentType
+                file.ContentType,
+                selectedMethod
             );
         }
         catch (Exception ex)

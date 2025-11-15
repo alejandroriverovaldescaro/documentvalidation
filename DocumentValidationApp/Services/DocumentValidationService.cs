@@ -11,19 +11,21 @@ namespace DocumentValidationApp.Services;
 
 public interface IDocumentValidationService
 {
-    Task<DocumentValidationResult> ValidateDocumentAsync(Stream fileStream, string fileName, string contentType);
+    Task<DocumentValidationResult> ValidateDocumentAsync(Stream fileStream, string fileName, string contentType, ProcessingMethod method = ProcessingMethod.TesseractOCR);
 }
 
 public class DocumentValidationService : IDocumentValidationService
 {
     private readonly string _tessDataPath;
+    private readonly IOllamaService _ollamaService;
 
-    public DocumentValidationService(IWebHostEnvironment environment)
+    public DocumentValidationService(IWebHostEnvironment environment, IOllamaService ollamaService)
     {
         _tessDataPath = Path.Combine(environment.WebRootPath, "tessdata");
+        _ollamaService = ollamaService;
     }
 
-    public async Task<DocumentValidationResult> ValidateDocumentAsync(Stream fileStream, string fileName, string contentType)
+    public async Task<DocumentValidationResult> ValidateDocumentAsync(Stream fileStream, string fileName, string contentType, ProcessingMethod method = ProcessingMethod.TesseractOCR)
     {
         var result = new DocumentValidationResult();
 
@@ -43,7 +45,7 @@ public class DocumentValidationService : IDocumentValidationService
             }
             else if (isImage)
             {
-                await ProcessImageDocument(fileStream, result, fileName);
+                await ProcessImageDocument(fileStream, result, fileName, method);
             }
             else
             {
@@ -91,7 +93,7 @@ public class DocumentValidationService : IDocumentValidationService
         await Task.CompletedTask;
     }
 
-    private async Task ProcessImageDocument(Stream fileStream, DocumentValidationResult result, string fileName)
+    private async Task ProcessImageDocument(Stream fileStream, DocumentValidationResult result, string fileName, ProcessingMethod method)
     {
         try
         {
@@ -100,62 +102,128 @@ public class DocumentValidationService : IDocumentValidationService
             result.ValidationMessages.Add($"Image file: {fileName}");
             result.ValidationMessages.Add($"Dimensions: {image.Width}x{image.Height} pixels");
             result.ValidationMessages.Add($"Image format detected and validated successfully.");
+            result.ValidationMessages.Add($"Processing method: {method}");
             
-            // Perform OCR using Tesseract
-            try
+            if (method == ProcessingMethod.OllamaVision)
             {
-                // Save image to temporary file for Tesseract processing
-                var tempImagePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
-                await image.SaveAsPngAsync(tempImagePath);
-
-                try
-                {
-                    // Check if tessdata exists
-                    if (!Directory.Exists(_tessDataPath) || !File.Exists(Path.Combine(_tessDataPath, "eng.traineddata")))
-                    {
-                        result.ValidationMessages.Add("⚠️ OCR language data not found. Text extraction from images is limited.");
-                        result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
-                        result.ExtractedText.Add("Note: To enable text extraction from images, download eng.traineddata from https://github.com/tesseract-ocr/tessdata and place it in wwwroot/tessdata/");
-                    }
-                    else
-                    {
-                        using var engine = new TesseractEngine(_tessDataPath, "eng", EngineMode.Default);
-                        using var tesseractImage = Pix.LoadFromFile(tempImagePath);
-                        using var page = engine.Process(tesseractImage);
-                        
-                        var extractedText = page.GetText();
-                        
-                        if (!string.IsNullOrWhiteSpace(extractedText))
-                        {
-                            result.ExtractedText.Add(extractedText.Trim());
-                            result.ValidationMessages.Add($"✓ Text successfully extracted from image using OCR (Confidence: {page.GetMeanConfidence():P0})");
-                        }
-                        else
-                        {
-                            result.ValidationMessages.Add("⚠️ No text could be extracted from the image. Image may be too low quality or contain no text.");
-                            result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
-                        }
-                    }
-                }
-                finally
-                {
-                    // Clean up temporary file
-                    if (File.Exists(tempImagePath))
-                    {
-                        File.Delete(tempImagePath);
-                    }
-                }
+                await ProcessImageWithOllama(image, result, fileName);
             }
-            catch (Exception ocrEx)
+            else
             {
-                result.ValidationMessages.Add($"⚠️ OCR processing failed: {ocrEx.Message}");
-                result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
-                result.ExtractedText.Add("Note: Text extraction from image failed. The image may need preprocessing or higher quality.");
+                await ProcessImageWithTesseract(image, result, fileName);
             }
         }
         catch (Exception ex)
         {
             result.ValidationMessages.Add($"Warning: Could not process image - {ex.Message}");
+        }
+    }
+
+    private async Task ProcessImageWithOllama(Image<Rgba32> image, DocumentValidationResult result, string fileName)
+    {
+        try
+        {
+            // Check if Ollama is available
+            var isAvailable = await _ollamaService.IsAvailableAsync();
+            if (!isAvailable)
+            {
+                result.ValidationMessages.Add("⚠️ Ollama service not available. Please ensure Ollama is running and qwen2-vl:8b model is installed.");
+                result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                result.ExtractedText.Add("Note: Run 'ollama pull qwen2-vl:8b' to download the model.");
+                return;
+            }
+
+            // Convert image to byte array
+            using var ms = new MemoryStream();
+            await image.SaveAsPngAsync(ms);
+            var imageBytes = ms.ToArray();
+
+            // Create detailed prompt for document analysis
+            var prompt = @"Analyze this document image and provide the following information in a structured format:
+
+1. Document Type (identify if it's a passport, driver's license, ID card, or other document type)
+2. Document Number (if visible)
+3. Expiration Date (if visible, in format: MM/DD/YYYY or DD/MM/YYYY)
+4. Issuing Authority (if visible)
+5. Full text content visible in the document
+6. Any other relevant information
+
+Please be thorough and extract all visible text and data from the document.";
+
+            result.ValidationMessages.Add("🤖 Analyzing image with AI Vision (Qwen2-VL)...");
+            
+            var analysis = await _ollamaService.AnalyzeImageAsync(imageBytes, prompt);
+            
+            if (!string.IsNullOrWhiteSpace(analysis))
+            {
+                result.ExtractedText.Add(analysis.Trim());
+                result.ValidationMessages.Add($"✓ AI Vision analysis completed successfully using Ollama/Qwen2-VL");
+            }
+            else
+            {
+                result.ValidationMessages.Add("⚠️ AI Vision analysis returned no results.");
+                result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+            }
+        }
+        catch (Exception ex)
+        {
+            result.ValidationMessages.Add($"⚠️ Ollama Vision processing failed: {ex.Message}");
+            result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+            result.ExtractedText.Add("Note: Ensure Ollama is running with 'ollama serve' and the model is available.");
+        }
+    }
+
+    private async Task ProcessImageWithTesseract(Image<Rgba32> image, DocumentValidationResult result, string fileName)
+    {
+        try
+        {
+            // Save image to temporary file for Tesseract processing
+            var tempImagePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.png");
+            await image.SaveAsPngAsync(tempImagePath);
+
+            try
+            {
+                // Check if tessdata exists
+                if (!Directory.Exists(_tessDataPath) || !File.Exists(Path.Combine(_tessDataPath, "eng.traineddata")))
+                {
+                    result.ValidationMessages.Add("⚠️ OCR language data not found. Text extraction from images is limited.");
+                    result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                    result.ExtractedText.Add("Note: To enable text extraction from images, download eng.traineddata from https://github.com/tesseract-ocr/tessdata and place it in wwwroot/tessdata/");
+                }
+                else
+                {
+                    using var engine = new TesseractEngine(_tessDataPath, "eng", EngineMode.Default);
+                    using var tesseractImage = Pix.LoadFromFile(tempImagePath);
+                    using var page = engine.Process(tesseractImage);
+                    
+                    var extractedText = page.GetText();
+                    
+                    if (!string.IsNullOrWhiteSpace(extractedText))
+                    {
+                        result.ExtractedText.Add(extractedText.Trim());
+                        result.ValidationMessages.Add($"✓ Text successfully extracted from image using OCR (Confidence: {page.GetMeanConfidence():P0})");
+                    }
+                    else
+                    {
+                        result.ValidationMessages.Add("⚠️ No text could be extracted from the image. Image may be too low quality or contain no text.");
+                        result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+                    }
+                }
+            }
+            finally
+            {
+                // Clean up temporary file
+                if (File.Exists(tempImagePath))
+                {
+                    File.Delete(tempImagePath);
+                }
+            }
+        }
+        catch (Exception ocrEx)
+        {
+            result.ValidationMessages.Add($"⚠️ OCR processing failed: {ocrEx.Message}");
+            result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
+            result.ExtractedText.Add("Note: Text extraction from image failed. The image may need preprocessing or higher quality.");
         }
     }
 

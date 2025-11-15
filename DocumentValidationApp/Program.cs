@@ -7,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Register HTTP client for Ollama service
+builder.Services.AddHttpClient<IOllamaService, OllamaService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5); // Ollama vision can take time
+});
+
 // Register document validation service
 builder.Services.AddScoped<IDocumentValidationService, DocumentValidationService>();
 
