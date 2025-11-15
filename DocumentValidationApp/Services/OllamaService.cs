@@ -50,12 +50,21 @@ public class OllamaService : IOllamaService
                 model = _modelName,
                 prompt = prompt,
                 images = new[] { base64Image },
-                stream = false
+                stream = false,
+                options = new
+                {
+                    temperature = 0.1,        // Lower temperature for more consistent outputs
+                    num_predict = 2048,       // Allow longer responses
+                    num_ctx = 4096,           // Context window size
+                    num_gpu = 999,            // Use all available GPU layers (0 for CPU only)
+                    num_thread = 8            // CPU threads to use
+                }
             };
 
             var jsonContent = JsonSerializer.Serialize(requestBody);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+            // Vision models can take 10-30 minutes on CPU, especially on first run when model loads
             var response = await _httpClient.PostAsync($"{_ollamaBaseUrl}/api/generate", content);
             response.EnsureSuccessStatusCode();
 
@@ -68,6 +77,26 @@ public class OllamaService : IOllamaService
             }
 
             return string.Empty;
+        }
+        catch (TaskCanceledException ex)
+        {
+            throw new Exception($"Vision model processing timed out. This can happen when:\n" +
+                              $"• First time running (model needs to load into memory)\n" +
+                              $"• Running on CPU without GPU acceleration\n" +
+                              $"• Processing very large/complex images\n" +
+                              $"\nTips to resolve:\n" +
+                              $"• Ensure Ollama is running: ollama serve\n" +
+                              $"• Check if model is loaded: ollama list\n" +
+                              $"• Try a smaller image file\n" +
+                              $"• Consider using Tesseract OCR for faster processing\n" +
+                              $"• If on CPU, first run may take 10-30 minutes\n" +
+                              $"\nOriginal error: {ex.Message}", ex);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"Failed to connect to Ollama at {_ollamaBaseUrl}.\n" +
+                              $"Ensure Ollama is running with: ollama serve\n" +
+                              $"Error: {ex.Message}", ex);
         }
         catch (Exception ex)
         {

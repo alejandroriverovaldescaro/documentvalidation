@@ -7,10 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Register HTTP client for Ollama service
+// Register HTTP client for Ollama service with extended timeout
 builder.Services.AddHttpClient<IOllamaService, OllamaService>(client =>
 {
-    client.Timeout = TimeSpan.FromMinutes(5); // Ollama vision can take time
+    // Vision models can take a very long time on first run (model loading) or CPU-only systems
+    // Setting to System.Threading.Timeout.InfiniteTimeSpan to allow unlimited processing time
+    client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
+    client.BaseAddress = new Uri("http://localhost:11434");
 });
 
 // Register document validation service
