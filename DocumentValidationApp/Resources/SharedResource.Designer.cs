@@ -22,21 +22,21 @@ namespace DocumentValidationApp.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SharedResource {
+    public class SharedResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SharedResource() {
+        public SharedResource() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DocumentValidationApp.Resources.SharedResource", typeof(SharedResource).Assembly);
@@ -51,7 +51,7 @@ namespace DocumentValidationApp.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
-        internal static string Common_Language {
+        public static string Common_Language {
             get {
                 return ResourceManager.GetString("Common.Language", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Accepted formats: PDF, PNG, JPG, JPEG (Max size: 10MB).
         /// </summary>
-        internal static string DocVal_AcceptedFormats {
+        public static string DocVal_AcceptedFormats {
             get {
                 return ResourceManager.GetString("DocVal.AcceptedFormats", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Upload a document (PDF, PNG, JPG, JPEG) to validate its type and extract key information. Supported documents: Passport, Driver&apos;s License, ID Card..
         /// </summary>
-        internal static string DocVal_CardDescription {
+        public static string DocVal_CardDescription {
             get {
                 return ResourceManager.GetString("DocVal.CardDescription", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Upload Document for Validation.
         /// </summary>
-        internal static string DocVal_CardHeader {
+        public static string DocVal_CardHeader {
             get {
                 return ResourceManager.GetString("DocVal.CardHeader", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Description:.
         /// </summary>
-        internal static string DocVal_Description {
+        public static string DocVal_Description {
             get {
                 return ResourceManager.GetString("DocVal.Description", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Information.
         /// </summary>
-        internal static string DocVal_DocumentInformation {
+        public static string DocVal_DocumentInformation {
             get {
                 return ResourceManager.GetString("DocVal.DocumentInformation", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Number:.
         /// </summary>
-        internal static string DocVal_DocumentNumber {
+        public static string DocVal_DocumentNumber {
             get {
                 return ResourceManager.GetString("DocVal.DocumentNumber", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Type:.
         /// </summary>
-        internal static string DocVal_DocumentType {
+        public static string DocVal_DocumentType {
             get {
                 return ResourceManager.GetString("DocVal.DocumentType", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Expiration Date:.
         /// </summary>
-        internal static string DocVal_ExpirationDate {
+        public static string DocVal_ExpirationDate {
             get {
                 return ResourceManager.GetString("DocVal.ExpirationDate", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Extracted Text.
         /// </summary>
-        internal static string DocVal_ExtractedText {
+        public static string DocVal_ExtractedText {
             get {
                 return ResourceManager.GetString("DocVal.ExtractedText", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to File size exceeds the maximum allowed size of 10MB. Your file is {0}MB..
         /// </summary>
-        internal static string DocVal_FileSizeError {
+        public static string DocVal_FileSizeError {
             get {
                 return ResourceManager.GetString("DocVal.FileSizeError", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to How it works.
         /// </summary>
-        internal static string DocVal_HowItWorks {
+        public static string DocVal_HowItWorks {
             get {
                 return ResourceManager.GetString("DocVal.HowItWorks", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid file type. Please upload PDF or image files (PNG, JPG, JPEG)..
         /// </summary>
-        internal static string DocVal_InvalidFileType {
+        public static string DocVal_InvalidFileType {
             get {
                 return ResourceManager.GetString("DocVal.InvalidFileType", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Issuing Authority:.
         /// </summary>
-        internal static string DocVal_IssuingAuthority {
+        public static string DocVal_IssuingAuthority {
             get {
                 return ResourceManager.GetString("DocVal.IssuingAuthority", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to No validation messages..
         /// </summary>
-        internal static string DocVal_NoValidationMessages {
+        public static string DocVal_NoValidationMessages {
             get {
                 return ResourceManager.GetString("DocVal.NoValidationMessages", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen3-vl:8b model..
         /// </summary>
-        internal static string DocVal_OllamaDescription {
+        public static string DocVal_OllamaDescription {
             get {
                 return ResourceManager.GetString("DocVal.OllamaDescription", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Ollama AI Vision (Qwen3-VL - Advanced image analysis).
         /// </summary>
-        internal static string DocVal_OllamaVision {
+        public static string DocVal_OllamaVision {
             get {
                 return ResourceManager.GetString("DocVal.OllamaVision", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Advanced AI analysis with better context understanding.
         /// </summary>
-        internal static string DocVal_OllamaVisionDesc {
+        public static string DocVal_OllamaVisionDesc {
             get {
                 return ResourceManager.GetString("DocVal.OllamaVisionDesc", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Validation.
         /// </summary>
-        internal static string DocVal_PageTitle {
+        public static string DocVal_PageTitle {
             get {
                 return ResourceManager.GetString("DocVal.PageTitle", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Privacy.
         /// </summary>
-        internal static string DocVal_Privacy {
+        public static string DocVal_Privacy {
             get {
                 return ResourceManager.GetString("DocVal.Privacy", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Documents are processed in memory and not stored on the server. Ollama runs locally on your machine..
         /// </summary>
-        internal static string DocVal_PrivacyDesc {
+        public static string DocVal_PrivacyDesc {
             get {
                 return ResourceManager.GetString("DocVal.PrivacyDesc", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Processing document with {0}... Please wait..
         /// </summary>
-        internal static string DocVal_Processing {
+        public static string DocVal_Processing {
             get {
                 return ResourceManager.GetString("DocVal.Processing", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Error processing file: {0}.
         /// </summary>
-        internal static string DocVal_ProcessingError {
+        public static string DocVal_ProcessingError {
             get {
                 return ResourceManager.GetString("DocVal.ProcessingError", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Processing Method.
         /// </summary>
-        internal static string DocVal_ProcessingMethod {
+        public static string DocVal_ProcessingMethod {
             get {
                 return ResourceManager.GetString("DocVal.ProcessingMethod", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Processing Methods.
         /// </summary>
-        internal static string DocVal_ProcessingMethods {
+        public static string DocVal_ProcessingMethods {
             get {
                 return ResourceManager.GetString("DocVal.ProcessingMethods", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Select Document.
         /// </summary>
-        internal static string DocVal_SelectDocument {
+        public static string DocVal_SelectDocument {
             get {
                 return ResourceManager.GetString("DocVal.SelectDocument", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Select processing method.
         /// </summary>
-        internal static string DocVal_Step1 {
+        public static string DocVal_Step1 {
             get {
                 return ResourceManager.GetString("DocVal.Step1", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Upload your document.
         /// </summary>
-        internal static string DocVal_Step2 {
+        public static string DocVal_Step2 {
             get {
                 return ResourceManager.GetString("DocVal.Step2", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The system analyzes the file.
         /// </summary>
-        internal static string DocVal_Step3 {
+        public static string DocVal_Step3 {
             get {
                 return ResourceManager.GetString("DocVal.Step3", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document type is identified.
         /// </summary>
-        internal static string DocVal_Step4 {
+        public static string DocVal_Step4 {
             get {
                 return ResourceManager.GetString("DocVal.Step4", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Key data is extracted (dates, numbers).
         /// </summary>
-        internal static string DocVal_Step5 {
+        public static string DocVal_Step5 {
             get {
                 return ResourceManager.GetString("DocVal.Step5", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validation results are displayed.
         /// </summary>
-        internal static string DocVal_Step6 {
+        public static string DocVal_Step6 {
             get {
                 return ResourceManager.GetString("DocVal.Step6", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Traditional OCR for text extraction from document images..
         /// </summary>
-        internal static string DocVal_TesseractDescription {
+        public static string DocVal_TesseractDescription {
             get {
                 return ResourceManager.GetString("DocVal.TesseractDescription", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tesseract OCR (Traditional text extraction).
         /// </summary>
-        internal static string DocVal_TesseractOCR {
+        public static string DocVal_TesseractOCR {
             get {
                 return ResourceManager.GetString("DocVal.TesseractOCR", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Fast, reliable text extraction.
         /// </summary>
-        internal static string DocVal_TesseractOCRDesc {
+        public static string DocVal_TesseractOCRDesc {
             get {
                 return ResourceManager.GetString("DocVal.TesseractOCRDesc", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validation Failed.
         /// </summary>
-        internal static string DocVal_ValidationFailed {
+        public static string DocVal_ValidationFailed {
             get {
                 return ResourceManager.GetString("DocVal.ValidationFailed", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validation Messages.
         /// </summary>
-        internal static string DocVal_ValidationMessages {
+        public static string DocVal_ValidationMessages {
             get {
                 return ResourceManager.GetString("DocVal.ValidationMessages", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validation Results.
         /// </summary>
-        internal static string DocVal_ValidationResults {
+        public static string DocVal_ValidationResults {
             get {
                 return ResourceManager.GetString("DocVal.ValidationResults", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Upload your documents (PDF or images) and get instant feedback about document type, expiration dates, and other critical information..
         /// </summary>
-        internal static string Home_Description {
+        public static string Home_Description {
             get {
                 return ResourceManager.GetString("Home.Description", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document numbers.
         /// </summary>
-        internal static string Home_DocumentNumbers {
+        public static string Home_DocumentNumbers {
             get {
                 return ResourceManager.GetString("Home.DocumentNumbers", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Driver&apos;s Licenses.
         /// </summary>
-        internal static string Home_DriversLicense {
+        public static string Home_DriversLicense {
             get {
                 return ResourceManager.GetString("Home.DriversLicense", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to State-issued driving permits.
         /// </summary>
-        internal static string Home_DriversLicenseDesc {
+        public static string Home_DriversLicenseDesc {
             get {
                 return ResourceManager.GetString("Home.DriversLicenseDesc", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Expiration dates.
         /// </summary>
-        internal static string Home_ExpirationDates {
+        public static string Home_ExpirationDates {
             get {
                 return ResourceManager.GetString("Home.ExpirationDates", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Extracted Data:.
         /// </summary>
-        internal static string Home_ExtractedData {
+        public static string Home_ExtractedData {
             get {
                 return ResourceManager.GetString("Home.ExtractedData", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Identity Cards.
         /// </summary>
-        internal static string Home_IdentityCards {
+        public static string Home_IdentityCards {
             get {
                 return ResourceManager.GetString("Home.IdentityCards", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to National ID cards.
         /// </summary>
-        internal static string Home_IdentityCardsDesc {
+        public static string Home_IdentityCardsDesc {
             get {
                 return ResourceManager.GetString("Home.IdentityCardsDesc", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Process document images in PNG, JPG, and JPEG formats with OCR support..
         /// </summary>
-        internal static string Home_ImageDescription {
+        public static string Home_ImageDescription {
             get {
                 return ResourceManager.GetString("Home.ImageDescription", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Image Processing.
         /// </summary>
-        internal static string Home_ImageProcessing {
+        public static string Home_ImageProcessing {
             get {
                 return ResourceManager.GetString("Home.ImageProcessing", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Issuing authorities.
         /// </summary>
-        internal static string Home_IssuingAuthorities {
+        public static string Home_IssuingAuthorities {
             get {
                 return ResourceManager.GetString("Home.IssuingAuthorities", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Other Documents.
         /// </summary>
-        internal static string Home_OtherDocuments {
+        public static string Home_OtherDocuments {
             get {
                 return ResourceManager.GetString("Home.OtherDocuments", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to General document validation.
         /// </summary>
-        internal static string Home_OtherDocumentsDesc {
+        public static string Home_OtherDocumentsDesc {
             get {
                 return ResourceManager.GetString("Home.OtherDocumentsDesc", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Passports.
         /// </summary>
-        internal static string Home_Passports {
+        public static string Home_Passports {
             get {
                 return ResourceManager.GetString("Home.Passports", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to International travel documents.
         /// </summary>
-        internal static string Home_PassportsDesc {
+        public static string Home_PassportsDesc {
             get {
                 return ResourceManager.GetString("Home.PassportsDesc", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Extract text and metadata from PDF documents automatically..
         /// </summary>
-        internal static string Home_PDFDescription {
+        public static string Home_PDFDescription {
             get {
                 return ResourceManager.GetString("Home.PDFDescription", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to PDF Support.
         /// </summary>
-        internal static string Home_PDFSupport {
+        public static string Home_PDFSupport {
             get {
                 return ResourceManager.GetString("Home.PDFSupport", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Automatically identify document types: Passport, Driver&apos;s License, ID Card..
         /// </summary>
-        internal static string Home_SmartDescription {
+        public static string Home_SmartDescription {
             get {
                 return ResourceManager.GetString("Home.SmartDescription", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Smart Detection.
         /// </summary>
-        internal static string Home_SmartDetection {
+        public static string Home_SmartDetection {
             get {
                 return ResourceManager.GetString("Home.SmartDetection", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validate and extract information from identity documents using AI-powered document analysis.
         /// </summary>
-        internal static string Home_Subtitle {
+        public static string Home_Subtitle {
             get {
                 return ResourceManager.GetString("Home.Subtitle", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Supported Document Types.
         /// </summary>
-        internal static string Home_SupportedDocuments {
+        public static string Home_SupportedDocuments {
             get {
                 return ResourceManager.GetString("Home.SupportedDocuments", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Validation System.
         /// </summary>
-        internal static string Home_Title {
+        public static string Home_Title {
             get {
                 return ResourceManager.GetString("Home.Title", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Upload Document.
         /// </summary>
-        internal static string Home_UploadButton {
+        public static string Home_UploadButton {
             get {
                 return ResourceManager.GetString("Home.UploadButton", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Validation.
         /// </summary>
-        internal static string Nav_AppName {
+        public static string Nav_AppName {
             get {
                 return ResourceManager.GetString("Nav.AppName", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Document Validation.
         /// </summary>
-        internal static string Nav_DocumentValidation {
+        public static string Nav_DocumentValidation {
             get {
                 return ResourceManager.GetString("Nav.DocumentValidation", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace DocumentValidationApp.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
-        internal static string Nav_Home {
+        public static string Nav_Home {
             get {
                 return ResourceManager.GetString("Nav.Home", resourceCulture);
             }
