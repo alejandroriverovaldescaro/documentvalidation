@@ -4,6 +4,8 @@
 @using DocumentValidationApp.Services
 @using Microsoft.Extensions.Localization
 @using DocumentValidationApp.Resources
+@using Microsoft.AspNetCore.Components
+@using Markdig
 @inject IDocumentValidationService ValidationService
 @inject IStringLocalizer<SharedResource> Localizer
 
@@ -129,7 +131,7 @@
                                         </tr>
                                         <tr>
                                             <th>@Localizer["DocVal.Description"]</th>
-                                            <td>@validationResult.Description</td>
+                                            <td>@((MarkupString)Markdown.ToHtml(validationResult.Description))</td>
                                         </tr>
                                         @if (!string.IsNullOrEmpty(validationResult.DocumentNumber))
                                         {
@@ -163,7 +165,7 @@
                                     <ul class="list-group list-group-flush">
                                         @foreach (var message in validationResult.ValidationMessages)
                                         {
-                                            <li class="list-group-item" style="border: none; padding: 8px 0; font-size: 13px;">@message</li>
+                                            <li class="list-group-item" style="border: none; padding: 8px 0; font-size: 13px;">@((MarkupString)Markdown.ToHtml(message))</li>
                                         }
                                     </ul>
                                 }
@@ -181,7 +183,7 @@
                                 <div class="rounded" style="background-color: #F8F9FA; padding: 16px; max-height: 300px; overflow-y: auto;">
                                     @foreach (var text in validationResult.ExtractedText)
                                     {
-                                        <pre style="font-size: 12px; margin-bottom: 8px;">@text</pre>
+                                        <div style="font-size: 12px; margin-bottom: 8px;">@((MarkupString)Markdown.ToHtml(text))</div>
                                     }
                                 </div>
                             </div>
