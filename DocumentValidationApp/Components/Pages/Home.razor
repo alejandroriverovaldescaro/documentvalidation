@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.Extensions.Localization
-@inject IStringLocalizer<Resources.SharedResource> Localizer
+@using DocumentValidationApp.Resources
+@inject IStringLocalizer<SharedResource> Localizer
 
 <PageTitle>@Localizer["Nav.AppName"] - @Localizer["Nav.Home"]</PageTitle>
 

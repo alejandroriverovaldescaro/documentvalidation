@@ -3,8 +3,9 @@
 @using DocumentValidationApp.Models
 @using DocumentValidationApp.Services
 @using Microsoft.Extensions.Localization
+@using DocumentValidationApp.Resources
 @inject IDocumentValidationService ValidationService
-@inject IStringLocalizer<Resources.SharedResource> Localizer
+@inject IStringLocalizer<SharedResource> Localizer
 
 <PageTitle>@Localizer["DocVal.PageTitle"]</PageTitle>
 
