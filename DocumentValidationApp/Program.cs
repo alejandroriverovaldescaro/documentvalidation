@@ -1,7 +1,15 @@
 using DocumentValidationApp.Components;
 using DocumentValidationApp.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add localization services
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// Add controller support for culture switching
+builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -21,6 +29,22 @@ builder.Services.AddScoped<IDocumentValidationService, DocumentValidationService
 
 var app = builder.Build();
 
+// Configure supported cultures
+var supportedCultures = new[]
+{
+    new CultureInfo("en"),
+    new CultureInfo("nl"),
+    new CultureInfo("es"),
+    new CultureInfo("pap")
+};
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -34,6 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
+app.MapControllers();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

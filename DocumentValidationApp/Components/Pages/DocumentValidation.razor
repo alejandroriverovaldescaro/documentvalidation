@@ -2,53 +2,54 @@
 @rendermode InteractiveServer
 @using DocumentValidationApp.Models
 @using DocumentValidationApp.Services
+@using Microsoft.Extensions.Localization
 @inject IDocumentValidationService ValidationService
+@inject IStringLocalizer<Resources.SharedResource> Localizer
 
-<PageTitle>Document Validation</PageTitle>
+<PageTitle>@Localizer["DocVal.PageTitle"]</PageTitle>
 
 <div class="container mt-4">
     <h1 class="mb-4" style="color: #0066CC; font-weight: 600;">
-        <i class="bi bi-file-earmark-check"></i> Document Validation
+        <i class="bi bi-file-earmark-check"></i> @Localizer["DocVal.PageTitle"]
     </h1>
 
     <div class="row">
         <div class="col-md-8">
             <div class="dashboard-card">
-                <div class="dashboard-card-header">Upload Document for Validation</div>
+                <div class="dashboard-card-header">@Localizer["DocVal.CardHeader"]</div>
                 <div class="dashboard-card-content">
                     <p class="text-secondary">
-                        Upload a document (PDF, PNG, JPG, JPEG) to validate its type and extract key information.
-                        Supported documents: Passport, Driver's License, ID Card.
+                        @Localizer["DocVal.CardDescription"]
                     </p>
 
                     <div class="mb-3">
                         <label for="processingMethod" class="form-label font-weight-bold">
-                            <i class="bi bi-gear-fill"></i> Processing Method
+                            <i class="bi bi-gear-fill"></i> @Localizer["DocVal.ProcessingMethod"]
                         </label>
                         <select id="processingMethod" class="form-select" @bind="selectedMethod">
-                            <option value="@ProcessingMethod.TesseractOCR">Tesseract OCR (Traditional text extraction)</option>
-                            <option value="@ProcessingMethod.OllamaVision">Ollama AI Vision (Qwen3-VL - Advanced image analysis)</option>
+                            <option value="@ProcessingMethod.TesseractOCR">@Localizer["DocVal.TesseractOCR"]</option>
+                            <option value="@ProcessingMethod.OllamaVision">@Localizer["DocVal.OllamaVision"]</option>
                         </select>
                         <div class="form-text text-muted">
                             @if (selectedMethod == ProcessingMethod.TesseractOCR)
                             {
-                                <span>Traditional OCR for text extraction from document images.</span>
+                                <span>@Localizer["DocVal.TesseractDescription"]</span>
                             }
                             else
                             {
-                                <span>AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen3-vl:8b model.</span>
+                                <span>@Localizer["DocVal.OllamaDescription"]</span>
                             }
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="fileInput" class="form-label font-weight-bold">Select Document</label>
+                        <label for="fileInput" class="form-label font-weight-bold">@Localizer["DocVal.SelectDocument"]</label>
                         <InputFile OnChange="HandleFileSelected" 
                                    class="form-control" 
                                    id="fileInput" 
                                    accept=".pdf,.png,.jpg,.jpeg" />
                         <div class="form-text text-muted">
-                            Accepted formats: PDF, PNG, JPG, JPEG (Max size: 10MB)
+                            @Localizer["DocVal.AcceptedFormats"]
                         </div>
                     </div>
 
@@ -58,7 +59,7 @@
                             <div class="spinner-border spinner-border-sm me-2" role="status">
                                 <span class="visually-hidden">Processing...</span>
                             </div>
-                            Processing document with @selectedMethod... Please wait.
+                            @Localizer["DocVal.Processing", selectedMethod]
                         </div>
                     }
 
@@ -77,29 +78,29 @@
         <div class="col-md-4">
             <div class="dashboard-card" style="background-color: #E6F2FF;">
                 <div class="dashboard-card-header">
-                    <i class="bi bi-info-circle"></i> How it works
+                    <i class="bi bi-info-circle"></i> @Localizer["DocVal.HowItWorks"]
                 </div>
                 <div class="dashboard-card-content">
                     <ol style="font-size: 13px;">
-                        <li>Select processing method</li>
-                        <li>Upload your document</li>
-                        <li>The system analyzes the file</li>
-                        <li>Document type is identified</li>
-                        <li>Key data is extracted (dates, numbers)</li>
-                        <li>Validation results are displayed</li>
+                        <li>@Localizer["DocVal.Step1"]</li>
+                        <li>@Localizer["DocVal.Step2"]</li>
+                        <li>@Localizer["DocVal.Step3"]</li>
+                        <li>@Localizer["DocVal.Step4"]</li>
+                        <li>@Localizer["DocVal.Step5"]</li>
+                        <li>@Localizer["DocVal.Step6"]</li>
                     </ol>
                     <hr />
-                    <h6 class="font-weight-bold"><i class="bi bi-cpu-fill"></i> Processing Methods</h6>
+                    <h6 class="font-weight-bold"><i class="bi bi-cpu-fill"></i> @Localizer["DocVal.ProcessingMethods"]</h6>
                     <div style="font-size: 13px;" class="text-secondary mb-2">
-                        <strong>Tesseract OCR:</strong> Fast, reliable text extraction
+                        <strong>Tesseract OCR:</strong> @Localizer["DocVal.TesseractOCRDesc"]
                     </div>
                     <div style="font-size: 13px;" class="text-secondary mb-2">
-                        <strong>Ollama Vision:</strong> Advanced AI analysis with better context understanding
+                        <strong>Ollama Vision:</strong> @Localizer["DocVal.OllamaVisionDesc"]
                     </div>
                     <hr />
-                    <h6 class="font-weight-bold"><i class="bi bi-shield-check"></i> Privacy</h6>
+                    <h6 class="font-weight-bold"><i class="bi bi-shield-check"></i> @Localizer["DocVal.Privacy"]</h6>
                     <p style="font-size: 13px;" class="text-secondary">
-                        Documents are processed in memory and not stored on the server. Ollama runs locally on your machine.
+                        @Localizer["DocVal.PrivacyDesc"]
                     </p>
                 </div>
             </div>
@@ -113,40 +114,40 @@
                 <div class="dashboard-card" style="border-left: 4px solid #4CAF50;">
                     <div class="dashboard-card-header" style="background-color: #4CAF50; color: white; margin: -24px -24px 20px -24px; padding: 16px 24px; border-radius: 12px 12px 0 0;">
                         <i class="bi bi-check-circle-fill me-2"></i>
-                        Validation Results
+                        @Localizer["DocVal.ValidationResults"]
                     </div>
                     <div class="dashboard-card-content">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold" style="color: #0066CC;">Document Information</h6>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.DocumentInformation"]</h6>
                                 <table class="table table-sm">
                                     <tbody>
                                         <tr>
-                                            <th width="40%">Document Type:</th>
+                                            <th width="40%">@Localizer["DocVal.DocumentType"]</th>
                                             <td><span class="badge" style="background-color: #0066CC; color: white;">@validationResult.DocumentType</span></td>
                                         </tr>
                                         <tr>
-                                            <th>Description:</th>
+                                            <th>@Localizer["DocVal.Description"]</th>
                                             <td>@validationResult.Description</td>
                                         </tr>
                                         @if (!string.IsNullOrEmpty(validationResult.DocumentNumber))
                                         {
                                             <tr>
-                                                <th>Document Number:</th>
+                                                <th>@Localizer["DocVal.DocumentNumber"]</th>
                                                 <td><code>@validationResult.DocumentNumber</code></td>
                                             </tr>
                                         }
                                         @if (!string.IsNullOrEmpty(validationResult.ExpirationDate))
                                         {
                                             <tr>
-                                                <th>Expiration Date:</th>
+                                                <th>@Localizer["DocVal.ExpirationDate"]</th>
                                                 <td><strong>@validationResult.ExpirationDate</strong></td>
                                             </tr>
                                         }
                                         @if (!string.IsNullOrEmpty(validationResult.IssuingAuthority))
                                         {
                                             <tr>
-                                                <th>Issuing Authority:</th>
+                                                <th>@Localizer["DocVal.IssuingAuthority"]</th>
                                                 <td>@validationResult.IssuingAuthority</td>
                                             </tr>
                                         }
@@ -155,7 +156,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold" style="color: #0066CC;">Validation Messages</h6>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.ValidationMessages"]</h6>
                                 @if (validationResult.ValidationMessages.Any())
                                 {
                                     <ul class="list-group list-group-flush">
@@ -167,7 +168,7 @@
                                 }
                                 else
                                 {
-                                    <p class="text-muted">No validation messages.</p>
+                                    <p class="text-muted">@Localizer["DocVal.NoValidationMessages"]</p>
                                 }
                             </div>
                         </div>
@@ -175,7 +176,7 @@
                         @if (validationResult.ExtractedText.Any())
                         {
                             <div class="mt-3">
-                                <h6 class="font-weight-bold" style="color: #0066CC;">Extracted Text</h6>
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.ExtractedText"]</h6>
                                 <div class="rounded" style="background-color: #F8F9FA; padding: 16px; max-height: 300px; overflow-y: auto;">
                                     @foreach (var text in validationResult.ExtractedText)
                                     {
@@ -194,7 +195,7 @@
         <div class="row mt-4">
             <div class="col-12">
                 <div class="alert alert-danger" style="border-left: 4px solid #DC3545;">
-                    <h5><i class="bi bi-x-circle-fill me-2"></i>Validation Failed</h5>
+                    <h5><i class="bi bi-x-circle-fill me-2"></i>@Localizer["DocVal.ValidationFailed"]</h5>
                     <p>@validationResult.ErrorMessage</p>
                 </div>
             </div>
@@ -222,7 +223,7 @@
             // Validate file size
             if (file.Size > MaxFileSize)
             {
-                errorMessage = $"File size exceeds the maximum allowed size of 10MB. Your file is {file.Size / 1024 / 1024:F2}MB.";
+                errorMessage = string.Format(Localizer["DocVal.FileSizeError"], (file.Size / 1024 / 1024).ToString("F2"));
                 return;
             }
 
@@ -231,7 +232,7 @@
             var fileExtension = Path.GetExtension(file.Name).ToLower();
             if (!allowedExtensions.Contains(fileExtension))
             {
-                errorMessage = "Invalid file type. Please upload PDF or image files (PNG, JPG, JPEG).";
+                errorMessage = Localizer["DocVal.InvalidFileType"];
                 return;
             }
 
@@ -250,7 +251,7 @@
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error processing file: {ex.Message}";
+            errorMessage = string.Format(Localizer["DocVal.ProcessingError"], ex.Message);
         }
         finally
         {

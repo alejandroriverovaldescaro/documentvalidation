@@ -1,24 +1,25 @@
 ﻿@page "/"
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Resources.SharedResource> Localizer
 
-<PageTitle>Document Validation - Home</PageTitle>
+<PageTitle>@Localizer["Nav.AppName"] - @Localizer["Nav.Home"]</PageTitle>
 
 <div class="container mt-5">
     <div class="text-center mb-5">
         <h1 class="display-4 mb-3" style="color: #0066CC; font-weight: 600;">
             <i class="bi bi-shield-check"></i>
-            Document Validation System
+            @Localizer["Home.Title"]
         </h1>
         <p class="lead text-secondary mb-4">
-            Validate and extract information from identity documents using AI-powered document analysis
+            @Localizer["Home.Subtitle"]
         </p>
         <p class="text-muted mb-5">
-            Upload your documents (PDF or images) and get instant feedback about document type, 
-            expiration dates, and other critical information.
+            @Localizer["Home.Description"]
         </p>
 
         <div class="d-flex gap-2 justify-content-center mb-5">
             <a href="/document-validation" class="btn btn-primary btn-lg px-4">
-                <i class="bi bi-upload"></i> Upload Document
+                <i class="bi bi-upload"></i> @Localizer["Home.UploadButton"]
             </a>
         </div>
     </div>
@@ -27,11 +28,11 @@
         <div class="dashboard-card">
             <div class="dashboard-card-header">
                 <i class="bi bi-file-earmark-pdf" style="color: #0066CC; font-size: 1.5rem;"></i>
-                PDF Support
+                @Localizer["Home.PDFSupport"]
             </div>
             <div class="dashboard-card-content">
                 <p class="text-secondary">
-                    Extract text and metadata from PDF documents automatically.
+                    @Localizer["Home.PDFDescription"]
                 </p>
             </div>
         </div>
@@ -39,11 +40,11 @@
         <div class="dashboard-card">
             <div class="dashboard-card-header">
                 <i class="bi bi-image" style="color: #00BCD4; font-size: 1.5rem;"></i>
-                Image Processing
+                @Localizer["Home.ImageProcessing"]
             </div>
             <div class="dashboard-card-content">
                 <p class="text-secondary">
-                    Process document images in PNG, JPG, and JPEG formats with OCR support.
+                    @Localizer["Home.ImageDescription"]
                 </p>
             </div>
         </div>
@@ -51,11 +52,11 @@
         <div class="dashboard-card">
             <div class="dashboard-card-header">
                 <i class="bi bi-search" style="color: #4CAF50; font-size: 1.5rem;"></i>
-                Smart Detection
+                @Localizer["Home.SmartDetection"]
             </div>
             <div class="dashboard-card-content">
                 <p class="text-secondary">
-                    Automatically identify document types: Passport, Driver's License, ID Card.
+                    @Localizer["Home.SmartDescription"]
                 </p>
             </div>
         </div>
@@ -63,28 +64,28 @@
 
     <div class="dashboard-card mt-4">
         <div class="dashboard-card-header">
-            <i class="bi bi-info-circle"></i> Supported Document Types
+            <i class="bi bi-info-circle"></i> @Localizer["Home.SupportedDocuments"]
         </div>
         <div class="dashboard-card-content">
             <div class="row">
                 <div class="col-md-4">
                     <ul>
-                        <li><strong>Passports</strong> - International travel documents</li>
-                        <li><strong>Driver's Licenses</strong> - State-issued driving permits</li>
+                        <li><strong>@Localizer["Home.Passports"]</strong> - @Localizer["Home.PassportsDesc"]</li>
+                        <li><strong>@Localizer["Home.DriversLicense"]</strong> - @Localizer["Home.DriversLicenseDesc"]</li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <ul>
-                        <li><strong>Identity Cards</strong> - National ID cards</li>
-                        <li><strong>Other Documents</strong> - General document validation</li>
+                        <li><strong>@Localizer["Home.IdentityCards"]</strong> - @Localizer["Home.IdentityCardsDesc"]</li>
+                        <li><strong>@Localizer["Home.OtherDocuments"]</strong> - @Localizer["Home.OtherDocumentsDesc"]</li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6 class="font-weight-bold">Extracted Data:</h6>
+                    <h6 class="font-weight-bold">@Localizer["Home.ExtractedData"]</h6>
                     <ul>
-                        <li>Expiration dates</li>
-                        <li>Document numbers</li>
-                        <li>Issuing authorities</li>
+                        <li>@Localizer["Home.ExpirationDates"]</li>
+                        <li>@Localizer["Home.DocumentNumbers"]</li>
+                        <li>@Localizer["Home.IssuingAuthorities"]</li>
                     </ul>
                 </div>
             </div>
