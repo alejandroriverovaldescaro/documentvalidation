@@ -1,0 +1,94 @@
+﻿@page "/"
+
+<PageTitle>Document Validation - Home</PageTitle>
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 mb-3" style="color: #0066CC; font-weight: 600;">
+            <i class="bi bi-shield-check"></i>
+            Document Validation System
+        </h1>
+        <p class="lead text-secondary mb-4">
+            Validate and extract information from identity documents using AI-powered document analysis
+        </p>
+        <p class="text-muted mb-5">
+            Upload your documents (PDF or images) and get instant feedback about document type, 
+            expiration dates, and other critical information.
+        </p>
+
+        <div class="d-flex gap-2 justify-content-center mb-5">
+            <a href="/document-validation" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-upload"></i> Upload Document
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="dashboard-card-header">
+                <i class="bi bi-file-earmark-pdf" style="color: #0066CC; font-size: 1.5rem;"></i>
+                PDF Support
+            </div>
+            <div class="dashboard-card-content">
+                <p class="text-secondary">
+                    Extract text and metadata from PDF documents automatically.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-header">
+                <i class="bi bi-image" style="color: #00BCD4; font-size: 1.5rem;"></i>
+                Image Processing
+            </div>
+            <div class="dashboard-card-content">
+                <p class="text-secondary">
+                    Process document images in PNG, JPG, and JPEG formats with OCR support.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-header">
+                <i class="bi bi-search" style="color: #4CAF50; font-size: 1.5rem;"></i>
+                Smart Detection
+            </div>
+            <div class="dashboard-card-content">
+                <p class="text-secondary">
+                    Automatically identify document types: Passport, Driver's License, ID Card.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-card mt-4">
+        <div class="dashboard-card-header">
+            <i class="bi bi-info-circle"></i> Supported Document Types
+        </div>
+        <div class="dashboard-card-content">
+            <div class="row">
+                <div class="col-md-4">
+                    <ul>
+                        <li><strong>Passports</strong> - International travel documents</li>
+                        <li><strong>Driver's Licenses</strong> - State-issued driving permits</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul>
+                        <li><strong>Identity Cards</strong> - National ID cards</li>
+                        <li><strong>Other Documents</strong> - General document validation</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="font-weight-bold">Extracted Data:</h6>
+                    <ul>
+                        <li>Expiration dates</li>
+                        <li>Document numbers</li>
+                        <li>Issuing authorities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
