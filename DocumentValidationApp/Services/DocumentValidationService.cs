@@ -127,9 +127,9 @@ public class DocumentValidationService : IDocumentValidationService
             var isAvailable = await _ollamaService.IsAvailableAsync();
             if (!isAvailable)
             {
-                result.ValidationMessages.Add("⚠️ Ollama service not available. Please ensure Ollama is running and qwen2-vl:8b model is installed.");
+                result.ValidationMessages.Add("⚠️ Ollama service not available. Please ensure Ollama is running and qwen3-vl:8b model is installed.");
                 result.ExtractedText.Add($"Image file uploaded: {fileName} ({image.Width}x{image.Height})");
-                result.ExtractedText.Add("Note: Run 'ollama pull qwen2-vl:8b' to download the model.");
+                result.ExtractedText.Add("Note: Run 'ollama pull qwen3-vl:8b' to download the model.");
                 return;
             }
 
@@ -150,14 +150,14 @@ public class DocumentValidationService : IDocumentValidationService
 
 Please be thorough and extract all visible text and data from the document.";
 
-            result.ValidationMessages.Add("🤖 Analyzing image with AI Vision (Qwen2-VL)...");
+            result.ValidationMessages.Add("🤖 Analyzing image with AI Vision (Qwen3-VL)...");
             
             var analysis = await _ollamaService.AnalyzeImageAsync(imageBytes, prompt);
             
             if (!string.IsNullOrWhiteSpace(analysis))
             {
                 result.ExtractedText.Add(analysis.Trim());
-                result.ValidationMessages.Add($"✓ AI Vision analysis completed successfully using Ollama/Qwen2-VL");
+                result.ValidationMessages.Add($"✓ AI Vision analysis completed successfully using Ollama/Qwen3-VL");
             }
             else
             {

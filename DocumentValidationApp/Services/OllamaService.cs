@@ -19,7 +19,7 @@ public class OllamaService : IOllamaService
     {
         _httpClient = httpClient;
         _ollamaBaseUrl = "http://localhost:11434";
-        _modelName = "qwen2-vl:8b";
+        _modelName = "qwen3-vl:8b";
     }
 
     public async Task<bool> IsAvailableAsync()

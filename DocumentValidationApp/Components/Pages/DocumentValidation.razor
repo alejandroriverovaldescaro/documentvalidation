@@ -27,7 +27,7 @@
                         </label>
                         <select id="processingMethod" class="form-select" @bind="selectedMethod">
                             <option value="@ProcessingMethod.TesseractOCR">Tesseract OCR (Traditional text extraction)</option>
-                            <option value="@ProcessingMethod.OllamaVision">Ollama AI Vision (Qwen2-VL - Advanced image analysis)</option>
+                            <option value="@ProcessingMethod.OllamaVision">Ollama AI Vision (Qwen3-VL - Advanced image analysis)</option>
                         </select>
                         <div class="form-text text-muted">
                             @if (selectedMethod == ProcessingMethod.TesseractOCR)
@@ -36,7 +36,7 @@
                             }
                             else
                             {
-                                <span>AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen2-vl:8b model.</span>
+                                <span>AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen3-vl:8b model.</span>
                             }
                         </div>
                     </div>

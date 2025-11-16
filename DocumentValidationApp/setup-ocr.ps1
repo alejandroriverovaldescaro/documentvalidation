@@ -66,9 +66,10 @@ catch {
     Write-Host "❌ Download failed!" -ForegroundColor Red
     Write-Host "Error: $_" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Please manually download the file from:"
+    Write-Host "Please download the file manually from:"
     Write-Host "https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata"
     Write-Host ""
     Write-Host "Save it to: $TessdataFile"
     exit 1
 }
+    
