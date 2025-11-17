@@ -1,0 +1,11 @@
+# Document Validation Tool Requirements
+
+# Option 2: OCR Text Extraction (optional)
+pytesseract>=0.3.10
+Pillow>=10.0.0
+
+# Option 3: Azure AI Vision (optional)
+azure-ai-vision-imageanalysis>=1.0.0b1
+
+# Core dependencies
+python-dotenv>=1.0.0
