@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav.DocumentValidation" xml:space="preserve">
+    <value>Document Validation</value>
+  </data>
+  <data name="Nav.AppName" xml:space="preserve">
+    <value>Document Validation</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="Home.Title" xml:space="preserve">
+    <value>Document Validation System</value>
+  </data>
+  <data name="Home.Subtitle" xml:space="preserve">
+    <value>Validate and extract information from identity documents using AI-powered document analysis</value>
+  </data>
+  <data name="Home.Description" xml:space="preserve">
+    <value>Upload your documents (PDF or images) and get instant feedback about document type, expiration dates, and other critical information.</value>
+  </data>
+  <data name="Home.UploadButton" xml:space="preserve">
+    <value>Upload Document</value>
+  </data>
+  <data name="Home.PDFSupport" xml:space="preserve">
+    <value>PDF Support</value>
+  </data>
+  <data name="Home.PDFDescription" xml:space="preserve">
+    <value>Extract text and metadata from PDF documents automatically.</value>
+  </data>
+  <data name="Home.ImageProcessing" xml:space="preserve">
+    <value>Image Processing</value>
+  </data>
+  <data name="Home.ImageDescription" xml:space="preserve">
+    <value>Process document images in PNG, JPG, and JPEG formats with OCR support.</value>
+  </data>
+  <data name="Home.SmartDetection" xml:space="preserve">
+    <value>Smart Detection</value>
+  </data>
+  <data name="Home.SmartDescription" xml:space="preserve">
+    <value>Automatically identify document types: Passport, Driver's License, ID Card.</value>
+  </data>
+  <data name="Home.SupportedDocuments" xml:space="preserve">
+    <value>Supported Document Types</value>
+  </data>
+  <data name="Home.Passports" xml:space="preserve">
+    <value>Passports</value>
+  </data>
+  <data name="Home.PassportsDesc" xml:space="preserve">
+    <value>International travel documents</value>
+  </data>
+  <data name="Home.DriversLicense" xml:space="preserve">
+    <value>Driver's Licenses</value>
+  </data>
+  <data name="Home.DriversLicenseDesc" xml:space="preserve">
+    <value>State-issued driving permits</value>
+  </data>
+  <data name="Home.IdentityCards" xml:space="preserve">
+    <value>Identity Cards</value>
+  </data>
+  <data name="Home.IdentityCardsDesc" xml:space="preserve">
+    <value>National ID cards</value>
+  </data>
+  <data name="Home.OtherDocuments" xml:space="preserve">
+    <value>Other Documents</value>
+  </data>
+  <data name="Home.OtherDocumentsDesc" xml:space="preserve">
+    <value>General document validation</value>
+  </data>
+  <data name="Home.ExtractedData" xml:space="preserve">
+    <value>Extracted Data:</value>
+  </data>
+  <data name="Home.ExpirationDates" xml:space="preserve">
+    <value>Expiration dates</value>
+  </data>
+  <data name="Home.DocumentNumbers" xml:space="preserve">
+    <value>Document numbers</value>
+  </data>
+  <data name="Home.IssuingAuthorities" xml:space="preserve">
+    <value>Issuing authorities</value>
+  </data>
+  
+  <!-- Document Validation Page -->
+  <data name="DocVal.PageTitle" xml:space="preserve">
+    <value>Document Validation</value>
+  </data>
+  <data name="DocVal.CardHeader" xml:space="preserve">
+    <value>Upload Document for Validation</value>
+  </data>
+  <data name="DocVal.CardDescription" xml:space="preserve">
+    <value>Upload a document (PDF, PNG, JPG, JPEG) to validate its type and extract key information. Supported documents: Passport, Driver's License, ID Card.</value>
+  </data>
+  <data name="DocVal.ProcessingMethod" xml:space="preserve">
+    <value>Processing Method</value>
+  </data>
+  <data name="DocVal.TesseractOCR" xml:space="preserve">
+    <value>Tesseract OCR (Traditional text extraction)</value>
+  </data>
+  <data name="DocVal.OllamaVision" xml:space="preserve">
+    <value>Ollama AI Vision (Qwen3-VL - Advanced image analysis)</value>
+  </data>
+  <data name="DocVal.TesseractDescription" xml:space="preserve">
+    <value>Traditional OCR for text extraction from document images.</value>
+  </data>
+  <data name="DocVal.OllamaDescription" xml:space="preserve">
+  <data name="DocVal.AzureAIVision" xml:space="preserve">
+    <value>Azure AI Vision (Cloud-based advanced analysis)</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDescription" xml:space="preserve">
+    <value>Cloud-based AI vision service with comprehensive image analysis, OCR, and object detection.</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDesc" xml:space="preserve">
+    <value>Microsoft Azure cloud AI for advanced document analysis</value>
+  </data>
+    <value>AI-powered vision model for comprehensive document analysis. Requires Ollama with qwen3-vl:8b model.</value>
+  </data>
+  <data name="DocVal.SelectDocument" xml:space="preserve">
+    <value>Select Document</value>
+  </data>
+  <data name="DocVal.AcceptedFormats" xml:space="preserve">
+    <value>Accepted formats: PDF, PNG, JPG, JPEG (Max size: 10MB)</value>
+  </data>
+  <data name="DocVal.Processing" xml:space="preserve">
+    <value>Processing document with {0}... Please wait.</value>
+  </data>
+  <data name="DocVal.HowItWorks" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="DocVal.Step1" xml:space="preserve">
+    <value>Select processing method</value>
+  </data>
+  <data name="DocVal.Step2" xml:space="preserve">
+    <value>Upload your document</value>
+  </data>
+  <data name="DocVal.Step3" xml:space="preserve">
+    <value>The system analyzes the file</value>
+  </data>
+  <data name="DocVal.Step4" xml:space="preserve">
+    <value>Document type is identified</value>
+  </data>
+  <data name="DocVal.Step5" xml:space="preserve">
+    <value>Key data is extracted (dates, numbers)</value>
+  </data>
+  <data name="DocVal.Step6" xml:space="preserve">
+    <value>Validation results are displayed</value>
+  </data>
+  <data name="DocVal.ProcessingMethods" xml:space="preserve">
+    <value>Processing Methods</value>
+  </data>
+  <data name="DocVal.TesseractOCRDesc" xml:space="preserve">
+    <value>Fast, reliable text extraction</value>
+  </data>
+  <data name="DocVal.OllamaVisionDesc" xml:space="preserve">
+    <value>Advanced AI analysis with better context understanding</value>
+  </data>
+  <data name="DocVal.Privacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="DocVal.PrivacyDesc" xml:space="preserve">
+    <value>Documents are processed in memory and not stored on the server. Ollama runs locally on your machine.</value>
+  </data>
+  <data name="DocVal.ValidationResults" xml:space="preserve">
+    <value>Validation Results</value>
+  </data>
+  <data name="DocVal.DocumentInformation" xml:space="preserve">
+    <value>Document Information</value>
+  </data>
+  <data name="DocVal.DocumentType" xml:space="preserve">
+    <value>Document Type:</value>
+  </data>
+  <data name="DocVal.Description" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="DocVal.DocumentNumber" xml:space="preserve">
+    <value>Document Number:</value>
+  </data>
+  <data name="DocVal.ExpirationDate" xml:space="preserve">
+    <value>Expiration Date:</value>
+  </data>
+  <data name="DocVal.IssuingAuthority" xml:space="preserve">
+    <value>Issuing Authority:</value>
+  </data>
+  <data name="DocVal.ValidationMessages" xml:space="preserve">
+    <value>Validation Messages</value>
+  </data>
+  <data name="DocVal.NoValidationMessages" xml:space="preserve">
+    <value>No validation messages.</value>
+  </data>
+  <data name="DocVal.ExtractedText" xml:space="preserve">
+    <value>Extracted Text</value>
+  </data>
+  <data name="DocVal.ValidationFailed" xml:space="preserve">
+    <value>Validation Failed</value>
+  </data>
+  <data name="DocVal.FileSizeError" xml:space="preserve">
+    <value>File size exceeds the maximum allowed size of 10MB. Your file is {0}MB.</value>
+  </data>
+  <data name="DocVal.InvalidFileType" xml:space="preserve">
+    <value>Invalid file type. Please upload PDF or image files (PNG, JPG, JPEG).</value>
+  </data>
+  <data name="DocVal.ProcessingError" xml:space="preserve">
+    <value>Error processing file: {0}</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common.Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+</root>

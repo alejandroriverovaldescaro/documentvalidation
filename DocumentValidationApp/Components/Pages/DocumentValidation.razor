@@ -1,0 +1,277 @@
+@page "/document-validation"
+@rendermode InteractiveServer
+@using DocumentValidationApp.Models
+@using DocumentValidationApp.Services
+@using Microsoft.Extensions.Localization
+@using DocumentValidationApp.Resources
+@using Microsoft.AspNetCore.Components
+@using Markdig
+@inject IDocumentValidationService ValidationService
+@inject IStringLocalizer<SharedResource> Localizer
+
+<PageTitle>@Localizer["DocVal.PageTitle"]</PageTitle>
+
+<div class="container mt-4">
+    <h1 class="mb-4" style="color: #0066CC; font-weight: 600;">
+        <i class="bi bi-file-earmark-check"></i> @Localizer["DocVal.PageTitle"]
+    </h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <div class="dashboard-card-header">@Localizer["DocVal.CardHeader"]</div>
+                <div class="dashboard-card-content">
+                    <p class="text-secondary">
+                        @Localizer["DocVal.CardDescription"]
+                    </p>
+
+                    <div class="mb-3">
+                        <label for="processingMethod" class="form-label font-weight-bold">
+                            <i class="bi bi-gear-fill"></i> @Localizer["DocVal.ProcessingMethod"]
+                        </label>
+                        <select id="processingMethod" class="form-select" @bind="selectedMethod">
+                            <option value="@ProcessingMethod.TesseractOCR">@Localizer["DocVal.TesseractOCR"]</option>
+                            <option value="@ProcessingMethod.OllamaVision">@Localizer["DocVal.OllamaVision"]</option>
+                            <option value="@ProcessingMethod.AzureAIVision">@Localizer["DocVal.AzureAIVision"]</option>
+                        </select>
+                        <div class="form-text text-muted">
+                            @if (selectedMethod == ProcessingMethod.TesseractOCR)
+                            {
+                                <span>@Localizer["DocVal.TesseractDescription"]</span>
+                            }
+                            else if (selectedMethod == ProcessingMethod.OllamaVision)
+                            {
+                                <span>@Localizer["DocVal.OllamaDescription"]</span>
+                            }
+                            else
+                            {
+                                <span>@Localizer["DocVal.AzureAIVisionDescription"]</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label font-weight-bold">@Localizer["DocVal.SelectDocument"]</label>
+                        <InputFile OnChange="HandleFileSelected" 
+                                   class="form-control" 
+                                   id="fileInput" 
+                                   accept=".pdf,.png,.jpg,.jpeg" />
+                        <div class="form-text text-muted">
+                            @Localizer["DocVal.AcceptedFormats"]
+                        </div>
+                    </div>
+
+                    @if (isProcessing)
+                    {
+                        <div class="alert alert-info">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            @Localizer["DocVal.Processing", selectedMethod]
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @errorMessage
+                            <button type="button" class="btn-close" @onclick="ClearError"></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-card" style="background-color: #E6F2FF;">
+                <div class="dashboard-card-header">
+                    <i class="bi bi-info-circle"></i> @Localizer["DocVal.HowItWorks"]
+                </div>
+                <div class="dashboard-card-content">
+                    <ol style="font-size: 13px;">
+                        <li>@Localizer["DocVal.Step1"]</li>
+                        <li>@Localizer["DocVal.Step2"]</li>
+                        <li>@Localizer["DocVal.Step3"]</li>
+                        <li>@Localizer["DocVal.Step4"]</li>
+                        <li>@Localizer["DocVal.Step5"]</li>
+                        <li>@Localizer["DocVal.Step6"]</li>
+                    </ol>
+                    <hr />
+                    <h6 class="font-weight-bold"><i class="bi bi-cpu-fill"></i> @Localizer["DocVal.ProcessingMethods"]</h6>
+                    <div style="font-size: 13px;" class="text-secondary mb-2">
+                        <strong>Tesseract OCR:</strong> @Localizer["DocVal.TesseractOCRDesc"]
+                    </div>
+                    <div style="font-size: 13px;" class="text-secondary mb-2">
+                        <strong>Ollama Vision:</strong> @Localizer["DocVal.OllamaVisionDesc"]
+                    </div>
+                    <div style="font-size: 13px;" class="text-secondary mb-2">
+                        <strong>Azure AI Vision:</strong> @Localizer["DocVal.AzureAIVisionDesc"]
+                    </div>
+                    <hr />
+                    <h6 class="font-weight-bold"><i class="bi bi-shield-check"></i> @Localizer["DocVal.Privacy"]</h6>
+                    <p style="font-size: 13px;" class="text-secondary">
+                        @Localizer["DocVal.PrivacyDesc"]
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (validationResult != null && validationResult.IsValid)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card" style="border-left: 4px solid #4CAF50;">
+                    <div class="dashboard-card-header" style="background-color: #4CAF50; color: white; margin: -24px -24px 20px -24px; padding: 16px 24px; border-radius: 12px 12px 0 0;">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        @Localizer["DocVal.ValidationResults"]
+                    </div>
+                    <div class="dashboard-card-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.DocumentInformation"]</h6>
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th width="40%">@Localizer["DocVal.DocumentType"]</th>
+                                            <td><span class="badge" style="background-color: #0066CC; color: white;">@validationResult.DocumentType</span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>@Localizer["DocVal.Description"]</th>
+                                            <td>@((MarkupString)Markdown.ToHtml(validationResult.Description))</td>
+                                        </tr>
+                                        @if (!string.IsNullOrEmpty(validationResult.DocumentNumber))
+                                        {
+                                            <tr>
+                                                <th>@Localizer["DocVal.DocumentNumber"]</th>
+                                                <td><code>@validationResult.DocumentNumber</code></td>
+                                            </tr>
+                                        }
+                                        @if (!string.IsNullOrEmpty(validationResult.ExpirationDate))
+                                        {
+                                            <tr>
+                                                <th>@Localizer["DocVal.ExpirationDate"]</th>
+                                                <td><strong>@validationResult.ExpirationDate</strong></td>
+                                            </tr>
+                                        }
+                                        @if (!string.IsNullOrEmpty(validationResult.IssuingAuthority))
+                                        {
+                                            <tr>
+                                                <th>@Localizer["DocVal.IssuingAuthority"]</th>
+                                                <td>@validationResult.IssuingAuthority</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.ValidationMessages"]</h6>
+                                @if (validationResult.ValidationMessages.Any())
+                                {
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var message in validationResult.ValidationMessages)
+                                        {
+                                            <li class="list-group-item" style="border: none; padding: 8px 0; font-size: 13px;">@((MarkupString)Markdown.ToHtml(message))</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">@Localizer["DocVal.NoValidationMessages"]</p>
+                                }
+                            </div>
+                        </div>
+
+                        @if (validationResult.ExtractedText.Any())
+                        {
+                            <div class="mt-3">
+                                <h6 class="font-weight-bold" style="color: #0066CC;">@Localizer["DocVal.ExtractedText"]</h6>
+                                <div class="rounded" style="background-color: #F8F9FA; padding: 16px; max-height: 300px; overflow-y: auto;">
+                                    @foreach (var text in validationResult.ExtractedText)
+                                    {
+                                        <div style="font-size: 12px; margin-bottom: 8px;">@((MarkupString)Markdown.ToHtml(text))</div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (validationResult != null && !validationResult.IsValid)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-danger" style="border-left: 4px solid #DC3545;">
+                    <h5><i class="bi bi-x-circle-fill me-2"></i>@Localizer["DocVal.ValidationFailed"]</h5>
+                    <p>@validationResult.ErrorMessage</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private DocumentValidationResult? validationResult;
+    private bool isProcessing = false;
+    private string? errorMessage;
+    private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
+    private ProcessingMethod selectedMethod = ProcessingMethod.TesseractOCR;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        errorMessage = null;
+        validationResult = null;
+        isProcessing = true;
+
+        try
+        {
+            var file = e.File;
+
+            // Validate file size
+            if (file.Size > MaxFileSize)
+            {
+                errorMessage = string.Format(Localizer["DocVal.FileSizeError"], (file.Size / 1024 / 1024).ToString("F2"));
+                return;
+            }
+
+            // Validate file type
+            var allowedExtensions = new[] { ".pdf", ".png", ".jpg", ".jpeg" };
+            var fileExtension = Path.GetExtension(file.Name).ToLower();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                errorMessage = Localizer["DocVal.InvalidFileType"];
+                return;
+            }
+
+            // Process the file
+            using var stream = file.OpenReadStream(MaxFileSize);
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            validationResult = await ValidationService.ValidateDocumentAsync(
+                memoryStream,
+                file.Name,
+                file.ContentType,
+                selectedMethod
+            );
+        }
+        catch (Exception ex)
+        {
+            errorMessage = string.Format(Localizer["DocVal.ProcessingError"], ex.Message);
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private void ClearError()
+    {
+        errorMessage = null;
+    }
+}
