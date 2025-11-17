@@ -1,0 +1,10 @@
+Sample Document for Testing
+
+This is a sample text document that can be used to test the document validation tool.
+
+The tool supports three analysis methods:
+1. Basic Validation - File type, size, and format checks
+2. OCR Text Extraction - Extract text using Tesseract OCR
+3. Azure AI Vision - Advanced document analysis using Azure AI Vision
+
+Each method provides different levels of analysis and insights.
