@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve">
+    <value>Kas</value>
+  </data>
+  <data name="Nav.DocumentValidation" xml:space="preserve">
+    <value>Validashon di Dokumento</value>
+  </data>
+  <data name="Nav.AppName" xml:space="preserve">
+    <value>Validashon di Dokumento</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="Home.Title" xml:space="preserve">
+    <value>Sistema di Validashon di Dokumento</value>
+  </data>
+  <data name="Home.Subtitle" xml:space="preserve">
+    <value>Valida i ekstrahá informashon for di dokumentonan di identifiká uzando análisis di dokumento impulsá pa AI</value>
+  </data>
+  <data name="Home.Description" xml:space="preserve">
+    <value>Karga bo dokumentonan (PDF òf imaginan) i haña feedback instantáneo tokante tipo di dokumento, fecha di vensementu i otro informashon krítiko.</value>
+  </data>
+  <data name="Home.UploadButton" xml:space="preserve">
+    <value>Karga Dokumento</value>
+  </data>
+  <data name="Home.PDFSupport" xml:space="preserve">
+    <value>Soporte PDF</value>
+  </data>
+  <data name="Home.PDFDescription" xml:space="preserve">
+    <value>Ekstrahá teksto i metadata for di dokumentonan PDF outomátikamente.</value>
+  </data>
+  <data name="Home.ImageProcessing" xml:space="preserve">
+    <value>Prosesamentu di Imágen</value>
+  </data>
+  <data name="Home.ImageDescription" xml:space="preserve">
+    <value>Prosesá imaginan di dokumento den formatomnan PNG, JPG i JPEG ku soporte OCR.</value>
+  </data>
+  <data name="Home.SmartDetection" xml:space="preserve">
+    <value>Detekshon Inteligente</value>
+  </data>
+  <data name="Home.SmartDescription" xml:space="preserve">
+    <value>Identifiká outomátikamente tiponan di dokumento: Paspoort, Reibeweis, Sédula.</value>
+  </data>
+  <data name="Home.SupportedDocuments" xml:space="preserve">
+    <value>Tiponan di Dokumento Soportá</value>
+  </data>
+  <data name="Home.Passports" xml:space="preserve">
+    <value>Paspoortnan</value>
+  </data>
+  <data name="Home.PassportsDesc" xml:space="preserve">
+    <value>Dokumentonan di biahe internashonal</value>
+  </data>
+  <data name="Home.DriversLicense" xml:space="preserve">
+    <value>Reibeweis</value>
+  </data>
+  <data name="Home.DriversLicenseDesc" xml:space="preserve">
+    <value>Permisonan pa core emití pa estado</value>
+  </data>
+  <data name="Home.IdentityCards" xml:space="preserve">
+    <value>Sédulanan</value>
+  </data>
+  <data name="Home.IdentityCardsDesc" xml:space="preserve">
+    <value>Tarheta di identifikashon nashonal</value>
+  </data>
+  <data name="Home.OtherDocuments" xml:space="preserve">
+    <value>Otro Dokumentonan</value>
+  </data>
+  <data name="Home.OtherDocumentsDesc" xml:space="preserve">
+    <value>Validashon general di dokumento</value>
+  </data>
+  <data name="Home.ExtractedData" xml:space="preserve">
+    <value>Datonan Ekstrahá:</value>
+  </data>
+  <data name="Home.ExpirationDates" xml:space="preserve">
+    <value>Fechanan di vensementu</value>
+  </data>
+  <data name="Home.DocumentNumbers" xml:space="preserve">
+    <value>Nùmeronan di dokumento</value>
+  </data>
+  <data name="Home.IssuingAuthorities" xml:space="preserve">
+    <value>Outoridat emisor</value>
+  </data>
+  
+  <!-- Document Validation Page -->
+  <data name="DocVal.PageTitle" xml:space="preserve">
+    <value>Validashon di Dokumento</value>
+  </data>
+  <data name="DocVal.CardHeader" xml:space="preserve">
+    <value>Karga Dokumento pa Validashon</value>
+  </data>
+  <data name="DocVal.CardDescription" xml:space="preserve">
+    <value>Karga un dokumento (PDF, PNG, JPG, JPEG) pa valida su tipo i ekstrahá informashon importante. Dokumentonan soportá: Paspoort, Reibeweis, Sédula.</value>
+  </data>
+  <data name="DocVal.ProcessingMethod" xml:space="preserve">
+    <value>Método di Prosesamentu</value>
+  </data>
+  <data name="DocVal.TesseractOCR" xml:space="preserve">
+    <value>Tesseract OCR (Ekstrakshon di teksto tradishonal)</value>
+  </data>
+  <data name="DocVal.OllamaVision" xml:space="preserve">
+    <value>Ollama AI Vision (Qwen3-VL - Análisis di imágen avansá)</value>
+  </data>
+  <data name="DocVal.TesseractDescription" xml:space="preserve">
+    <value>OCR tradishonal pa ekstrakshon di teksto for di imaginan di dokumento.</value>
+  </data>
+  <data name="DocVal.OllamaDescription" xml:space="preserve">
+  <data name="DocVal.AzureAIVision" xml:space="preserve">
+    <value>Azure AI Vision (Analisis avansá basá riba cloud)</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDescription" xml:space="preserve">
+    <value>Servicio di visiòn AI basá riba cloud ku analisis komprehensivo di imagen, OCR i detekshon di objeto.</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDesc" xml:space="preserve">
+    <value>Microsoft Azure cloud AI pa analisis avansá di dokumentu</value>
+  </data>
+    <value>Modelo di vishon impulsá pa AI pa análisis kompleto di dokumento. Ta nesesitá Ollama ku modelo qwen3-vl:8b.</value>
+  </data>
+  <data name="DocVal.SelectDocument" xml:space="preserve">
+    <value>Skohe Dokumento</value>
+  </data>
+  <data name="DocVal.AcceptedFormats" xml:space="preserve">
+    <value>Formatomnan aceptá: PDF, PNG, JPG, JPEG (Tamaño máx: 10MB)</value>
+  </data>
+  <data name="DocVal.Processing" xml:space="preserve">
+    <value>Prosesando dokumento ku {0}... Por fabor warda.</value>
+  </data>
+  <data name="DocVal.HowItWorks" xml:space="preserve">
+    <value>Con e ta funshoná</value>
+  </data>
+  <data name="DocVal.Step1" xml:space="preserve">
+    <value>Skohe método di prosesamentu</value>
+  </data>
+  <data name="DocVal.Step2" xml:space="preserve">
+    <value>Karga bo dokumento</value>
+  </data>
+  <data name="DocVal.Step3" xml:space="preserve">
+    <value>E sistema ta analisá e archivo</value>
+  </data>
+  <data name="DocVal.Step4" xml:space="preserve">
+    <value>Tipo di dokumento ta wòrdu identifiká</value>
+  </data>
+  <data name="DocVal.Step5" xml:space="preserve">
+    <value>Datonan importante ta wòrdu ekstrahá (fechanan, nùmeronan)</value>
+  </data>
+  <data name="DocVal.Step6" xml:space="preserve">
+    <value>Resultadonan di validashon ta wòrdu mustrá</value>
+  </data>
+  <data name="DocVal.ProcessingMethods" xml:space="preserve">
+    <value>Métodonan di Prosesamentu</value>
+  </data>
+  <data name="DocVal.TesseractOCRDesc" xml:space="preserve">
+    <value>Ekstrakshon di teksto rápido i konfiabel</value>
+  </data>
+  <data name="DocVal.OllamaVisionDesc" xml:space="preserve">
+    <value>Análisis AI avansá ku mihó komprenshon di konteksto</value>
+  </data>
+  <data name="DocVal.Privacy" xml:space="preserve">
+    <value>Privashon</value>
+  </data>
+  <data name="DocVal.PrivacyDesc" xml:space="preserve">
+    <value>Dokumentonan ta wòrdu prosesá den memoria i no ta wòrdu warda riba e servidor. Ollama ta kore lokalmente riba bo mashin.</value>
+  </data>
+  <data name="DocVal.ValidationResults" xml:space="preserve">
+    <value>Resultadonan di Validashon</value>
+  </data>
+  <data name="DocVal.DocumentInformation" xml:space="preserve">
+    <value>Informashon di Dokumento</value>
+  </data>
+  <data name="DocVal.DocumentType" xml:space="preserve">
+    <value>Tipo di Dokumento:</value>
+  </data>
+  <data name="DocVal.Description" xml:space="preserve">
+    <value>Deskripshon:</value>
+  </data>
+  <data name="DocVal.DocumentNumber" xml:space="preserve">
+    <value>Nùmero di Dokumento:</value>
+  </data>
+  <data name="DocVal.ExpirationDate" xml:space="preserve">
+    <value>Fecha di Vensementu:</value>
+  </data>
+  <data name="DocVal.IssuingAuthority" xml:space="preserve">
+    <value>Outoridat Emisor:</value>
+  </data>
+  <data name="DocVal.ValidationMessages" xml:space="preserve">
+    <value>Mensahenan di Validashon</value>
+  </data>
+  <data name="DocVal.NoValidationMessages" xml:space="preserve">
+    <value>No tin mensahenan di validashon.</value>
+  </data>
+  <data name="DocVal.ExtractedText" xml:space="preserve">
+    <value>Teksto Ekstrahá</value>
+  </data>
+  <data name="DocVal.ValidationFailed" xml:space="preserve">
+    <value>Validashon a Faya</value>
+  </data>
+  <data name="DocVal.FileSizeError" xml:space="preserve">
+    <value>Tamaño di archivo ta eksedé e tamaño máksimo permití di 10MB. Bo archivo ta di {0}MB.</value>
+  </data>
+  <data name="DocVal.InvalidFileType" xml:space="preserve">
+    <value>Tipo di archivo no válido. Por fabor karga archivonan PDF òf di imágen (PNG, JPG, JPEG).</value>
+  </data>
+  <data name="DocVal.ProcessingError" xml:space="preserve">
+    <value>Eròr ora di prosesá e archivo: {0}</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common.Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+</root>

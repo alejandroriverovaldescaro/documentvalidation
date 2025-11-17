@@ -1,0 +1,30 @@
+@rendermode InteractiveServer
+@using System.Globalization
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="culture-selector">
+    <select class="form-select form-select-sm" @onchange="ChangeCulture" value="@CultureInfo.CurrentCulture.Name">
+        <option value="en">English</option>
+        <option value="nl">Nederlands</option>
+        <option value="es">Español</option>
+        <option value="pap">Papiamento</option>
+    </select>
+</div>
+
+@code {
+    private async Task ChangeCulture(ChangeEventArgs e)
+    {
+        if (e.Value is string culture)
+        {
+            var uri = new Uri(Navigation.Uri)
+                .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+            var cultureEscaped = Uri.EscapeDataString(culture);
+            var uriEscaped = Uri.EscapeDataString(uri);
+
+            Navigation.NavigateTo(
+                $"Culture/Set?culture={cultureEscaped}&redirectUri={uriEscaped}",
+                forceLoad: true);
+        }
+    }
+}

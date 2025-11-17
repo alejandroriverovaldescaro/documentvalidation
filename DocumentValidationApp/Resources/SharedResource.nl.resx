@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav.DocumentValidation" xml:space="preserve">
+    <value>Documentvalidatie</value>
+  </data>
+  <data name="Nav.AppName" xml:space="preserve">
+    <value>Documentvalidatie</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="Home.Title" xml:space="preserve">
+    <value>Documentvalidatiesysteem</value>
+  </data>
+  <data name="Home.Subtitle" xml:space="preserve">
+    <value>Valideer en extraheer informatie uit identiteitsdocumenten met AI-aangedreven documentanalyse</value>
+  </data>
+  <data name="Home.Description" xml:space="preserve">
+    <value>Upload uw documenten (PDF of afbeeldingen) en krijg directe feedback over documenttype, vervaldatums en andere cruciale informatie.</value>
+  </data>
+  <data name="Home.UploadButton" xml:space="preserve">
+    <value>Document uploaden</value>
+  </data>
+  <data name="Home.PDFSupport" xml:space="preserve">
+    <value>PDF-ondersteuning</value>
+  </data>
+  <data name="Home.PDFDescription" xml:space="preserve">
+    <value>Extraheer automatisch tekst en metadata uit PDF-documenten.</value>
+  </data>
+  <data name="Home.ImageProcessing" xml:space="preserve">
+    <value>Beeldverwerking</value>
+  </data>
+  <data name="Home.ImageDescription" xml:space="preserve">
+    <value>Verwerk documentafbeeldingen in PNG-, JPG- en JPEG-formaten met OCR-ondersteuning.</value>
+  </data>
+  <data name="Home.SmartDetection" xml:space="preserve">
+    <value>Slimme detectie</value>
+  </data>
+  <data name="Home.SmartDescription" xml:space="preserve">
+    <value>Identificeer automatisch documenttypen: Paspoort, Rijbewijs, Identiteitskaart.</value>
+  </data>
+  <data name="Home.SupportedDocuments" xml:space="preserve">
+    <value>Ondersteunde documenttypen</value>
+  </data>
+  <data name="Home.Passports" xml:space="preserve">
+    <value>Paspoorten</value>
+  </data>
+  <data name="Home.PassportsDesc" xml:space="preserve">
+    <value>Internationale reisdocumenten</value>
+  </data>
+  <data name="Home.DriversLicense" xml:space="preserve">
+    <value>Rijbewijzen</value>
+  </data>
+  <data name="Home.DriversLicenseDesc" xml:space="preserve">
+    <value>Door de staat afgegeven rijvergunningen</value>
+  </data>
+  <data name="Home.IdentityCards" xml:space="preserve">
+    <value>Identiteitskaarten</value>
+  </data>
+  <data name="Home.IdentityCardsDesc" xml:space="preserve">
+    <value>Nationale identiteitskaarten</value>
+  </data>
+  <data name="Home.OtherDocuments" xml:space="preserve">
+    <value>Andere documenten</value>
+  </data>
+  <data name="Home.OtherDocumentsDesc" xml:space="preserve">
+    <value>Algemene documentvalidatie</value>
+  </data>
+  <data name="Home.ExtractedData" xml:space="preserve">
+    <value>Geëxtraheerde gegevens:</value>
+  </data>
+  <data name="Home.ExpirationDates" xml:space="preserve">
+    <value>Vervaldatums</value>
+  </data>
+  <data name="Home.DocumentNumbers" xml:space="preserve">
+    <value>Documentnummers</value>
+  </data>
+  <data name="Home.IssuingAuthorities" xml:space="preserve">
+    <value>Uitgevende autoriteiten</value>
+  </data>
+  
+  <!-- Document Validation Page -->
+  <data name="DocVal.PageTitle" xml:space="preserve">
+    <value>Documentvalidatie</value>
+  </data>
+  <data name="DocVal.CardHeader" xml:space="preserve">
+    <value>Document uploaden voor validatie</value>
+  </data>
+  <data name="DocVal.CardDescription" xml:space="preserve">
+    <value>Upload een document (PDF, PNG, JPG, JPEG) om het type te valideren en belangrijke informatie te extraheren. Ondersteunde documenten: Paspoort, Rijbewijs, Identiteitskaart.</value>
+  </data>
+  <data name="DocVal.ProcessingMethod" xml:space="preserve">
+    <value>Verwerkingsmethode</value>
+  </data>
+  <data name="DocVal.TesseractOCR" xml:space="preserve">
+    <value>Tesseract OCR (Traditionele tekstextractie)</value>
+  </data>
+  <data name="DocVal.OllamaVision" xml:space="preserve">
+    <value>Ollama AI Vision (Qwen3-VL - Geavanceerde beeldanalyse)</value>
+  </data>
+  <data name="DocVal.TesseractDescription" xml:space="preserve">
+    <value>Traditionele OCR voor tekstextractie uit documentafbeeldingen.</value>
+  </data>
+  <data name="DocVal.OllamaDescription" xml:space="preserve">
+  <data name="DocVal.AzureAIVision" xml:space="preserve">
+    <value>Azure AI Vision (Cloud-gebaseerde geavanceerde analyse)</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDescription" xml:space="preserve">
+    <value>Cloud-gebaseerde AI-visiedienst met uitgebreide beeldanalyse, OCR en objectdetectie.</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDesc" xml:space="preserve">
+    <value>Microsoft Azure cloud AI voor geavanceerde documentanalyse</value>
+  </data>
+    <value>AI-aangedreven visiemodel voor uitgebreide documentanalyse. Vereist Ollama met qwen3-vl:8b model.</value>
+  </data>
+  <data name="DocVal.SelectDocument" xml:space="preserve">
+    <value>Document selecteren</value>
+  </data>
+  <data name="DocVal.AcceptedFormats" xml:space="preserve">
+    <value>Geaccepteerde formaten: PDF, PNG, JPG, JPEG (Max grootte: 10MB)</value>
+  </data>
+  <data name="DocVal.Processing" xml:space="preserve">
+    <value>Document verwerken met {0}... Even geduld.</value>
+  </data>
+  <data name="DocVal.HowItWorks" xml:space="preserve">
+    <value>Hoe het werkt</value>
+  </data>
+  <data name="DocVal.Step1" xml:space="preserve">
+    <value>Selecteer verwerkingsmethode</value>
+  </data>
+  <data name="DocVal.Step2" xml:space="preserve">
+    <value>Upload uw document</value>
+  </data>
+  <data name="DocVal.Step3" xml:space="preserve">
+    <value>Het systeem analyseert het bestand</value>
+  </data>
+  <data name="DocVal.Step4" xml:space="preserve">
+    <value>Documenttype wordt geïdentificeerd</value>
+  </data>
+  <data name="DocVal.Step5" xml:space="preserve">
+    <value>Belangrijke gegevens worden geëxtraheerd (datums, nummers)</value>
+  </data>
+  <data name="DocVal.Step6" xml:space="preserve">
+    <value>Validatieresultaten worden weergegeven</value>
+  </data>
+  <data name="DocVal.ProcessingMethods" xml:space="preserve">
+    <value>Verwerkingsmethoden</value>
+  </data>
+  <data name="DocVal.TesseractOCRDesc" xml:space="preserve">
+    <value>Snelle, betrouwbare tekstextractie</value>
+  </data>
+  <data name="DocVal.OllamaVisionDesc" xml:space="preserve">
+    <value>Geavanceerde AI-analyse met beter contextbegrip</value>
+  </data>
+  <data name="DocVal.Privacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="DocVal.PrivacyDesc" xml:space="preserve">
+    <value>Documenten worden in het geheugen verwerkt en niet opgeslagen op de server. Ollama draait lokaal op uw machine.</value>
+  </data>
+  <data name="DocVal.ValidationResults" xml:space="preserve">
+    <value>Validatieresultaten</value>
+  </data>
+  <data name="DocVal.DocumentInformation" xml:space="preserve">
+    <value>Documentinformatie</value>
+  </data>
+  <data name="DocVal.DocumentType" xml:space="preserve">
+    <value>Documenttype:</value>
+  </data>
+  <data name="DocVal.Description" xml:space="preserve">
+    <value>Beschrijving:</value>
+  </data>
+  <data name="DocVal.DocumentNumber" xml:space="preserve">
+    <value>Documentnummer:</value>
+  </data>
+  <data name="DocVal.ExpirationDate" xml:space="preserve">
+    <value>Vervaldatum:</value>
+  </data>
+  <data name="DocVal.IssuingAuthority" xml:space="preserve">
+    <value>Uitgevende autoriteit:</value>
+  </data>
+  <data name="DocVal.ValidationMessages" xml:space="preserve">
+    <value>Validatieberichten</value>
+  </data>
+  <data name="DocVal.NoValidationMessages" xml:space="preserve">
+    <value>Geen validatieberichten.</value>
+  </data>
+  <data name="DocVal.ExtractedText" xml:space="preserve">
+    <value>Geëxtraheerde tekst</value>
+  </data>
+  <data name="DocVal.ValidationFailed" xml:space="preserve">
+    <value>Validatie mislukt</value>
+  </data>
+  <data name="DocVal.FileSizeError" xml:space="preserve">
+    <value>Bestandsgrootte overschrijdt de maximaal toegestane grootte van 10MB. Uw bestand is {0}MB.</value>
+  </data>
+  <data name="DocVal.InvalidFileType" xml:space="preserve">
+    <value>Ongeldig bestandstype. Upload alstublieft PDF- of afbeeldingsbestanden (PNG, JPG, JPEG).</value>
+  </data>
+  <data name="DocVal.ProcessingError" xml:space="preserve">
+    <value>Fout bij het verwerken van bestand: {0}</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common.Language" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+</root>
