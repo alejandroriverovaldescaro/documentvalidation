@@ -262,6 +262,15 @@
   <data name="DocVal.ProcessingError" xml:space="preserve">
     <value>Error al procesar el archivo: {0}</value>
   </data>
+  <data name="DocVal.ShowPreview" xml:space="preserve">
+    <value>Mostrar Vista Previa</value>
+  </data>
+  <data name="DocVal.HidePreview" xml:space="preserve">
+    <value>Ocultar Vista Previa</value>
+  </data>
+  <data name="DocVal.ImagePreview" xml:space="preserve">
+    <value>Vista Previa de Imagen</value>
+  </data>
   
   <!-- Common -->
   <data name="Common.Language" xml:space="preserve">

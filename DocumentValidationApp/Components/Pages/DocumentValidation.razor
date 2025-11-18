@@ -61,6 +61,31 @@
                         </div>
                     </div>
 
+                    @if (!string.IsNullOrEmpty(imagePreviewUrl))
+                    {
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-outline-primary btn-sm mb-2" @onclick="TogglePreview">
+                                <i class="bi @(showPreview ? "bi-eye-slash" : "bi-eye")"></i>
+                                @(showPreview ? Localizer["DocVal.HidePreview"] : Localizer["DocVal.ShowPreview"])
+                            </button>
+                            
+                            @if (showPreview)
+                            {
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <i class="bi bi-image"></i> @Localizer["DocVal.ImagePreview"]
+                                    </div>
+                                    <div class="card-body text-center" style="background-color: #f8f9fa;">
+                                        <img src="@imagePreviewUrl" 
+                                             alt="Document Preview" 
+                                             class="img-fluid rounded shadow-sm" 
+                                             style="max-height: 400px; max-width: 100%;" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
                     @if (isProcessing)
                     {
                         <div class="alert alert-info">
@@ -220,11 +245,14 @@
     private string? errorMessage;
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
     private ProcessingMethod selectedMethod = ProcessingMethod.TesseractOCR;
+    private string? imagePreviewUrl;
+    private bool showPreview = true;
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         errorMessage = null;
         validationResult = null;
+        imagePreviewUrl = null;
         isProcessing = true;
 
         try
@@ -247,12 +275,21 @@
                 return;
             }
 
-            // Process the file
+            // Read file into memory stream
             using var stream = file.OpenReadStream(MaxFileSize);
             using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
+            var fileBytes = memoryStream.ToArray();
 
+            // Generate preview for image files
+            if (fileExtension != ".pdf")
+            {
+                var base64 = Convert.ToBase64String(fileBytes);
+                imagePreviewUrl = $"data:{file.ContentType};base64,{base64}";
+            }
+
+            // Process the file
+            memoryStream.Position = 0;
             validationResult = await ValidationService.ValidateDocumentAsync(
                 memoryStream,
                 file.Name,
@@ -273,5 +310,10 @@
     private void ClearError()
     {
         errorMessage = null;
+    }
+
+    private void TogglePreview()
+    {
+        showPreview = !showPreview;
     }
 }
