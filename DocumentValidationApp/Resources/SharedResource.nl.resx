@@ -262,6 +262,15 @@
   <data name="DocVal.ProcessingError" xml:space="preserve">
     <value>Fout bij het verwerken van bestand: {0}</value>
   </data>
+  <data name="DocVal.ShowPreview" xml:space="preserve">
+    <value>Voorbeeld Tonen</value>
+  </data>
+  <data name="DocVal.HidePreview" xml:space="preserve">
+    <value>Voorbeeld Verbergen</value>
+  </data>
+  <data name="DocVal.ImagePreview" xml:space="preserve">
+    <value>Afbeeldingsvoorbeeld</value>
+  </data>
   
   <!-- Common -->
   <data name="Common.Language" xml:space="preserve">

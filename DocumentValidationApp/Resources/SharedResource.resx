@@ -262,6 +262,15 @@
   <data name="DocVal.ProcessingError" xml:space="preserve">
     <value>Error processing file: {0}</value>
   </data>
+  <data name="DocVal.ShowPreview" xml:space="preserve">
+    <value>Show Preview</value>
+  </data>
+  <data name="DocVal.HidePreview" xml:space="preserve">
+    <value>Hide Preview</value>
+  </data>
+  <data name="DocVal.ImagePreview" xml:space="preserve">
+    <value>Image Preview</value>
+  </data>
   
   <!-- Common -->
   <data name="Common.Language" xml:space="preserve">
