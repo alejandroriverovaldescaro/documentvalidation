@@ -182,4 +182,27 @@ public class DocumentValidationServiceTests
         Assert.NotNull(result.ExpirationDate);
         Assert.Contains(expectedDateSubstring, result.ExpirationDate, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Theory]
+    [InlineData("geldig tot / date of expiry / date d'expiratio 18 MEI/MAY 2027", "18 MEI/MAY 2027")]
+    [InlineData("GELDIG TOT 25 JAN/JAN 2026", "25 JAN/JAN 2026")]
+    [InlineData("date of expiry 15 DEC/DEC 2025", "15 DEC/DEC 2025")]
+    [InlineData("/ date of issue / date de délivrance 10 geldig tot / date of expiry / date d'expiratio 18 MEI/MAY 2017 18 MEI/MAY 2027 1971", "18 MEI/MAY 2027")]
+    public void ExpirationDateExtraction_WithMultilingualDualMonthFormat_ShouldDetectDate(string textWithDate, string expectedDateSubstring)
+    {
+        // This test verifies multilingual dual month name format like "18 MEI/MAY 2027"
+        // Common in European documents with multiple languages (Dutch/English, French/English, etc.)
+        var method = typeof(DocumentValidationService).GetMethod("ExtractCriticalData", 
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        
+        var result = new DocumentValidationResult();
+        result.ExtractedText.Add(textWithDate);
+        
+        // Act
+        method?.Invoke(_service, new object[] { result });
+        
+        // Assert
+        Assert.NotNull(result.ExpirationDate);
+        Assert.Contains(expectedDateSubstring, result.ExpirationDate, StringComparison.OrdinalIgnoreCase);
+    }
 }

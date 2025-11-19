@@ -369,22 +369,27 @@ Please be thorough and extract all visible text and data from the document.";
     {
         // Comprehensive patterns for expiration dates
         // Supports various formats: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, DD.MM.YYYY, DD MMM YYYY, etc.
+        // Also supports multilingual formats like "18 MEI/MAY 2027"
         var datePatterns = new[]
         {
-            // Dates with explicit expiration keywords on same line
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            // Dates with explicit expiration keywords on same line (including multilingual: "geldig tot")
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)[:\s/]*(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)[:\s/]*(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)[:\s/]*([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            
+            // Multilingual date format with dual month names: "18 MEI/MAY 2027"
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)[:\s/]*(\d{1,2}\s+[A-Za-z]{3,}/[A-Za-z]{3,}\s+\d{4})",
             
             // Dates without separators near keywords on same line
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{8})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)[:\s/]*(\d{8})",
             
             // Multi-line patterns: keyword on one line, date on next line (for Azure AI Vision OCR)
             // This handles cases where Azure OCR splits "EXPIRATION DATE" and "12/31/2025" across lines
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
-            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{8})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)(?:\s*date)?[\s\r\n:/]+(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)(?:\s*date)?[\s\r\n:/]+(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)(?:\s*date)?[\s\r\n:/]+([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)(?:\s*date)?[\s\r\n:/]+(\d{1,2}\s+[A-Za-z]{3,}/[A-Za-z]{3,}\s+\d{4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?|geldig\s+tot)(?:\s*date)?[\s\r\n:/]+(\d{8})",
             
             // Standard date formats with various separators (lower priority)
             @"(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{4})",
@@ -394,12 +399,19 @@ Please be thorough and extract all visible text and data from the document.";
             @"(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
             @"([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
             
+            // Multilingual dual month name format without keyword (lower priority)
+            @"(\d{1,2}\s+[A-Za-z]{3,}/[A-Za-z]{3,}\s+\d{4})",
+            
             // Dates without separators - 8 digits: MMDDYYYY or DDMMYYYY (lowest priority)
             @"\b(\d{2}\s?\d{2}\s?\d{4})\b"
         };
 
-        foreach (var pattern in datePatterns)
+        // Collect all candidate dates with their priority and whether they're in the future
+        var candidates = new List<(string dateString, DateTime parsedDate, int priority, bool isFuture)>();
+
+        for (int i = 0; i < datePatterns.Length; i++)
         {
+            var pattern = datePatterns[i];
             var matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
             foreach (Match match in matches)
             {
@@ -412,21 +424,39 @@ Please be thorough and extract all visible text and data from the document.";
                     var yearsDiff = Math.Abs((expiryDate - DateTime.Now).TotalDays / 365.25);
                     if (yearsDiff <= 50) // Document dates should be within 50 years of current date
                     {
-                        result.ExpirationDate = dateString;
+                        // Higher priority = better match (patterns with keywords have higher priority)
+                        int priority = datePatterns.Length - i;
+                        bool isFuture = expiryDate > DateTime.Now;
                         
-                        // Validate if date is expired
-                        if (expiryDate < DateTime.Now)
-                        {
-                            result.ValidationMessages.Add($"⚠️ WARNING: Document appears to be EXPIRED (Expiration: {result.ExpirationDate})");
-                        }
-                        else
-                        {
-                            result.ValidationMessages.Add($"✓ Document expiration date found: {result.ExpirationDate}");
-                        }
-                        return; // Exit once a valid date is found
+                        candidates.Add((dateString, expiryDate, priority, isFuture));
                     }
                 }
             }
+        }
+
+        // Select the best candidate
+        // Prefer: 1) Future dates (expiration dates are typically in future)
+        //         2) Higher priority (patterns with keywords)
+        //         3) First occurrence in case of ties
+        var bestCandidate = candidates
+            .OrderByDescending(c => c.isFuture)  // Future dates first
+            .ThenByDescending(c => c.priority)   // Higher priority patterns
+            .FirstOrDefault();
+
+        if (bestCandidate != default)
+        {
+            result.ExpirationDate = bestCandidate.dateString;
+            
+            // Validate if date is expired
+            if (bestCandidate.parsedDate < DateTime.Now)
+            {
+                result.ValidationMessages.Add($"⚠️ WARNING: Document appears to be EXPIRED (Expiration: {result.ExpirationDate})");
+            }
+            else
+            {
+                result.ValidationMessages.Add($"✓ Document expiration date found: {result.ExpirationDate}");
+            }
+            return;
         }
 
         if (string.IsNullOrEmpty(result.ExpirationDate))
@@ -487,6 +517,15 @@ Please be thorough and extract all visible text and data from the document.";
     {
         // Clean up the date string (remove extra spaces)
         dateString = Regex.Replace(dateString, @"\s+", " ").Trim();
+        
+        // Handle multilingual dual month format like "18 MEI/MAY 2027"
+        // Extract just the English month name (after the slash) for parsing
+        var dualMonthMatch = Regex.Match(dateString, @"^(\d{1,2})\s+[A-Za-z]{3,}/([A-Za-z]{3,})\s+(\d{4})$");
+        if (dualMonthMatch.Success)
+        {
+            // Use the English month (second one) for parsing
+            dateString = $"{dualMonthMatch.Groups[1].Value} {dualMonthMatch.Groups[2].Value} {dualMonthMatch.Groups[3].Value}";
+        }
         
         // Try different date formats
         var formats = new[]
