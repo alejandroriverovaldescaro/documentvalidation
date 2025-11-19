@@ -158,4 +158,28 @@ public class DocumentValidationServiceTests
             msg.Contains("expiration date", StringComparison.OrdinalIgnoreCase) || 
             msg.Contains("EXPIRED", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Theory]
+    [InlineData("EXPIRATION DATE\n12/31/2025", "12/31/2025")]
+    [InlineData("EXP\n01-15-2026", "01-15-2026")]
+    [InlineData("EXPIRY DATE\n15.06.2024", "15.06.2024")]
+    [InlineData("VALID UNTIL\n25 JAN 2027", "25 JAN 2027")]
+    [InlineData("EXPIRES\nJAN 25 2027", "JAN 25 2027")]
+    [InlineData("**Extracted Text (OCR):**\nPASSPORT\nEXPIRATION DATE\n12/31/2025\nPASSPORT NO\nAB123456", "12/31/2025")]
+    public void ExpirationDateExtraction_WithMultilineFormat_ShouldDetectDate(string textWithDate, string expectedDateSubstring)
+    {
+        // This test verifies Azure AI Vision multi-line format where keyword and date are on separate lines
+        var method = typeof(DocumentValidationService).GetMethod("ExtractCriticalData", 
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        
+        var result = new DocumentValidationResult();
+        result.ExtractedText.Add(textWithDate);
+        
+        // Act
+        method?.Invoke(_service, new object[] { result });
+        
+        // Assert
+        Assert.NotNull(result.ExpirationDate);
+        Assert.Contains(expectedDateSubstring, result.ExpirationDate, StringComparison.OrdinalIgnoreCase);
+    }
 }

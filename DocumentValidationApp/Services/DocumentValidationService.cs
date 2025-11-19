@@ -371,29 +371,36 @@ Please be thorough and extract all visible text and data from the document.";
         // Supports various formats: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, DD.MM.YYYY, DD MMM YYYY, etc.
         var datePatterns = new[]
         {
-            // Dates with explicit expiration keywords
+            // Dates with explicit expiration keywords on same line
             @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
             @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
             @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
             
-            // Dates without separators near keywords
+            // Dates without separators near keywords on same line
             @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{8})",
             
-            // Standard date formats with various separators
+            // Multi-line patterns: keyword on one line, date on next line (for Azure AI Vision OCR)
+            // This handles cases where Azure OCR splits "EXPIRATION DATE" and "12/31/2025" across lines
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)(?:\s*date)?[\s\r\n:]+(\d{8})",
+            
+            // Standard date formats with various separators (lower priority)
             @"(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{4})",
             @"(\d{4}[\s/.-]\d{1,2}[\s/.-]\d{1,2})",
             
-            // Dates with month names
+            // Dates with month names (lower priority)
             @"(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
             @"([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
             
-            // Dates without separators (8 digits: MMDDYYYY or DDMMYYYY)
+            // Dates without separators - 8 digits: MMDDYYYY or DDMMYYYY (lowest priority)
             @"\b(\d{2}\s?\d{2}\s?\d{4})\b"
         };
 
         foreach (var pattern in datePatterns)
         {
-            var matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+            var matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
             foreach (Match match in matches)
             {
                 var dateString = match.Groups[1].Value.Trim();
