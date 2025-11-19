@@ -367,34 +367,58 @@ Please be thorough and extract all visible text and data from the document.";
 
     private void ExtractExpirationDate(string text, DocumentValidationResult result)
     {
-        // Pattern for dates: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD
+        // Comprehensive patterns for expiration dates
+        // Supports various formats: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, DD.MM.YYYY, DD MMM YYYY, etc.
         var datePatterns = new[]
         {
-            @"(?:exp(?:iry)?|expiration|valid until|expires?)[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})",
-            @"(\d{1,2}[/-]\d{1,2}[/-]\d{4})",
-            @"(\d{4}[/-]\d{1,2}[/-]\d{1,2})"
+            // Dates with explicit expiration keywords
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            
+            // Dates without separators near keywords
+            @"(?:exp(?:iry)?\.?|expiration|valid\s*(?:until|thru|through|to)|expires?)[:\s]*(\d{8})",
+            
+            // Standard date formats with various separators
+            @"(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{4})",
+            @"(\d{4}[\s/.-]\d{1,2}[\s/.-]\d{1,2})",
+            
+            // Dates with month names
+            @"(\d{1,2}[\s/.-][A-Za-z]{3,}[\s/.-]\d{2,4})",
+            @"([A-Za-z]{3,}[\s/.-]\d{1,2}[\s/.-]\d{2,4})",
+            
+            // Dates without separators (8 digits: MMDDYYYY or DDMMYYYY)
+            @"\b(\d{2}\s?\d{2}\s?\d{4})\b"
         };
 
         foreach (var pattern in datePatterns)
         {
-            var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
-            if (match.Success)
+            var matches = Regex.Matches(text, pattern, RegexOptions.IgnoreCase);
+            foreach (Match match in matches)
             {
-                result.ExpirationDate = match.Groups[1].Value;
+                var dateString = match.Groups[1].Value.Trim();
                 
-                // Validate if date is expired
-                if (TryParseDate(result.ExpirationDate, out var expiryDate))
+                // Try to parse the date to validate it
+                if (TryParseDate(dateString, out var expiryDate))
                 {
-                    if (expiryDate < DateTime.Now)
+                    // Only accept dates that are in a reasonable range (past or future, but not too far)
+                    var yearsDiff = Math.Abs((expiryDate - DateTime.Now).TotalDays / 365.25);
+                    if (yearsDiff <= 50) // Document dates should be within 50 years of current date
                     {
-                        result.ValidationMessages.Add($"⚠️ WARNING: Document appears to be EXPIRED (Expiration: {result.ExpirationDate})");
-                    }
-                    else
-                    {
-                        result.ValidationMessages.Add($"✓ Document expiration date found: {result.ExpirationDate}");
+                        result.ExpirationDate = dateString;
+                        
+                        // Validate if date is expired
+                        if (expiryDate < DateTime.Now)
+                        {
+                            result.ValidationMessages.Add($"⚠️ WARNING: Document appears to be EXPIRED (Expiration: {result.ExpirationDate})");
+                        }
+                        else
+                        {
+                            result.ValidationMessages.Add($"✓ Document expiration date found: {result.ExpirationDate}");
+                        }
+                        return; // Exit once a valid date is found
                     }
                 }
-                break;
             }
         }
 
@@ -454,21 +478,61 @@ Please be thorough and extract all visible text and data from the document.";
 
     private bool TryParseDate(string dateString, out DateTime date)
     {
+        // Clean up the date string (remove extra spaces)
+        dateString = Regex.Replace(dateString, @"\s+", " ").Trim();
+        
         // Try different date formats
         var formats = new[]
         {
-            "MM/dd/yyyy", "M/d/yyyy",
-            "dd/MM/yyyy", "d/M/yyyy",
-            "yyyy-MM-dd", "yyyy/MM/dd",
-            "MM-dd-yyyy", "M-d-yyyy"
+            // Formats with slashes
+            "MM/dd/yyyy", "M/d/yyyy", "MM/dd/yy", "M/d/yy",
+            "dd/MM/yyyy", "d/M/yyyy", "dd/MM/yy", "d/M/yy",
+            "yyyy/MM/dd", "yyyy/M/d",
+            
+            // Formats with dashes
+            "MM-dd-yyyy", "M-d-yyyy", "MM-dd-yy", "M-d-yy",
+            "dd-MM-yyyy", "d-M-yyyy", "dd-MM-yy", "d-M-yy",
+            "yyyy-MM-dd", "yyyy-M-d",
+            
+            // Formats with dots
+            "MM.dd.yyyy", "M.d.yyyy", "MM.dd.yy", "M.d.yy",
+            "dd.MM.yyyy", "d.M.yyyy", "dd.MM.yy", "d.M.yy",
+            "yyyy.MM.dd", "yyyy.M.d",
+            
+            // Formats with spaces
+            "MM dd yyyy", "M d yyyy", 
+            "dd MM yyyy", "d M yyyy",
+            "yyyy MM dd", "yyyy M d",
+            
+            // Formats with month names
+            "dd MMM yyyy", "d MMM yyyy", "dd MMM yy", "d MMM yy",
+            "dd MMMM yyyy", "d MMMM yyyy", "dd MMMM yy", "d MMMM yy",
+            "MMM dd yyyy", "MMM d yyyy", "MMM dd yy", "MMM d yy",
+            "MMMM dd yyyy", "MMMM d yyyy", "MMMM dd yy", "MMMM d yy",
+            
+            // Formats without separators
+            "MMddyyyy", "ddMMyyyy", "yyyyMMdd"
         };
 
         foreach (var format in formats)
         {
-            if (DateTime.TryParseExact(dateString, format, null, System.Globalization.DateTimeStyles.None, out date))
+            if (DateTime.TryParseExact(dateString, format, System.Globalization.CultureInfo.InvariantCulture, 
+                System.Globalization.DateTimeStyles.None, out date))
             {
+                // If year is 2-digit, ensure it's interpreted correctly
+                if (date.Year < 100)
+                {
+                    date = date.AddYears(2000);
+                }
                 return true;
             }
+        }
+
+        // Try general parsing as a fallback
+        if (DateTime.TryParse(dateString, System.Globalization.CultureInfo.InvariantCulture, 
+            System.Globalization.DateTimeStyles.None, out date))
+        {
+            return true;
         }
 
         date = DateTime.MinValue;
