@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="Nav.DocumentValidation" xml:space="preserve">
+    <value>Validación de Documentos</value>
+  </data>
+  <data name="Nav.AppName" xml:space="preserve">
+    <value>Validación de Documentos</value>
+  </data>
+  
+  <!-- Home Page -->
+  <data name="Home.Title" xml:space="preserve">
+    <value>Sistema de Validación de Documentos</value>
+  </data>
+  <data name="Home.Subtitle" xml:space="preserve">
+    <value>Valide y extraiga información de documentos de identidad utilizando análisis de documentos impulsado por IA</value>
+  </data>
+  <data name="Home.Description" xml:space="preserve">
+    <value>Cargue sus documentos (PDF o imágenes) y obtenga comentarios instantáneos sobre el tipo de documento, fechas de vencimiento y otra información crítica.</value>
+  </data>
+  <data name="Home.UploadButton" xml:space="preserve">
+    <value>Cargar Documento</value>
+  </data>
+  <data name="Home.PDFSupport" xml:space="preserve">
+    <value>Soporte PDF</value>
+  </data>
+  <data name="Home.PDFDescription" xml:space="preserve">
+    <value>Extraiga texto y metadatos de documentos PDF automáticamente.</value>
+  </data>
+  <data name="Home.ImageProcessing" xml:space="preserve">
+    <value>Procesamiento de Imágenes</value>
+  </data>
+  <data name="Home.ImageDescription" xml:space="preserve">
+    <value>Procese imágenes de documentos en formatos PNG, JPG y JPEG con soporte OCR.</value>
+  </data>
+  <data name="Home.SmartDetection" xml:space="preserve">
+    <value>Detección Inteligente</value>
+  </data>
+  <data name="Home.SmartDescription" xml:space="preserve">
+    <value>Identifique automáticamente tipos de documentos: Pasaporte, Licencia de Conducir, Tarjeta de Identidad.</value>
+  </data>
+  <data name="Home.SupportedDocuments" xml:space="preserve">
+    <value>Tipos de Documentos Soportados</value>
+  </data>
+  <data name="Home.Passports" xml:space="preserve">
+    <value>Pasaportes</value>
+  </data>
+  <data name="Home.PassportsDesc" xml:space="preserve">
+    <value>Documentos de viaje internacionales</value>
+  </data>
+  <data name="Home.DriversLicense" xml:space="preserve">
+    <value>Licencias de Conducir</value>
+  </data>
+  <data name="Home.DriversLicenseDesc" xml:space="preserve">
+    <value>Permisos de conducir emitidos por el estado</value>
+  </data>
+  <data name="Home.IdentityCards" xml:space="preserve">
+    <value>Tarjetas de Identidad</value>
+  </data>
+  <data name="Home.IdentityCardsDesc" xml:space="preserve">
+    <value>Tarjetas de identificación nacionales</value>
+  </data>
+  <data name="Home.OtherDocuments" xml:space="preserve">
+    <value>Otros Documentos</value>
+  </data>
+  <data name="Home.OtherDocumentsDesc" xml:space="preserve">
+    <value>Validación general de documentos</value>
+  </data>
+  <data name="Home.ExtractedData" xml:space="preserve">
+    <value>Datos Extraídos:</value>
+  </data>
+  <data name="Home.ExpirationDates" xml:space="preserve">
+    <value>Fechas de vencimiento</value>
+  </data>
+  <data name="Home.DocumentNumbers" xml:space="preserve">
+    <value>Números de documento</value>
+  </data>
+  <data name="Home.IssuingAuthorities" xml:space="preserve">
+    <value>Autoridades emisoras</value>
+  </data>
+  
+  <!-- Document Validation Page -->
+  <data name="DocVal.PageTitle" xml:space="preserve">
+    <value>Validación de Documentos</value>
+  </data>
+  <data name="DocVal.CardHeader" xml:space="preserve">
+    <value>Cargar Documento para Validación</value>
+  </data>
+  <data name="DocVal.CardDescription" xml:space="preserve">
+    <value>Cargue un documento (PDF, PNG, JPG, JPEG) para validar su tipo y extraer información clave. Documentos soportados: Pasaporte, Licencia de Conducir, Tarjeta de Identidad.</value>
+  </data>
+  <data name="DocVal.ProcessingMethod" xml:space="preserve">
+    <value>Método de Procesamiento</value>
+  </data>
+  <data name="DocVal.TesseractOCR" xml:space="preserve">
+    <value>Tesseract OCR (Extracción de texto tradicional)</value>
+  </data>
+  <data name="DocVal.OllamaVision" xml:space="preserve">
+    <value>Ollama AI Vision (Qwen3-VL - Análisis de imagen avanzado)</value>
+  </data>
+  <data name="DocVal.TesseractDescription" xml:space="preserve">
+    <value>OCR tradicional para extracción de texto de imágenes de documentos.</value>
+  </data>
+  <data name="DocVal.OllamaDescription" xml:space="preserve">
+  <data name="DocVal.AzureAIVision" xml:space="preserve">
+    <value>Azure AI Vision (Análisis avanzado basado en la nube)</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDescription" xml:space="preserve">
+    <value>Servicio de visión AI basado en la nube con análisis de imagen, OCR y detección de objetos.</value>
+  </data>
+  <data name="DocVal.AzureAIVisionDesc" xml:space="preserve">
+    <value>IA en la nube de Microsoft Azure para análisis avanzado de documentos</value>
+  </data>
+    <value>Modelo de visión impulsado por IA para análisis integral de documentos. Requiere Ollama con modelo qwen3-vl:8b.</value>
+  </data>
+  <data name="DocVal.SelectDocument" xml:space="preserve">
+    <value>Seleccionar Documento</value>
+  </data>
+  <data name="DocVal.AcceptedFormats" xml:space="preserve">
+    <value>Formatos aceptados: PDF, PNG, JPG, JPEG (Tamaño máx: 10MB)</value>
+  </data>
+  <data name="DocVal.Processing" xml:space="preserve">
+    <value>Procesando documento con {0}... Por favor espere.</value>
+  </data>
+  <data name="DocVal.HowItWorks" xml:space="preserve">
+    <value>Cómo funciona</value>
+  </data>
+  <data name="DocVal.Step1" xml:space="preserve">
+    <value>Seleccione el método de procesamiento</value>
+  </data>
+  <data name="DocVal.Step2" xml:space="preserve">
+    <value>Cargue su documento</value>
+  </data>
+  <data name="DocVal.Step3" xml:space="preserve">
+    <value>El sistema analiza el archivo</value>
+  </data>
+  <data name="DocVal.Step4" xml:space="preserve">
+    <value>Se identifica el tipo de documento</value>
+  </data>
+  <data name="DocVal.Step5" xml:space="preserve">
+    <value>Se extraen los datos clave (fechas, números)</value>
+  </data>
+  <data name="DocVal.Step6" xml:space="preserve">
+    <value>Se muestran los resultados de validación</value>
+  </data>
+  <data name="DocVal.ProcessingMethods" xml:space="preserve">
+    <value>Métodos de Procesamiento</value>
+  </data>
+  <data name="DocVal.TesseractOCRDesc" xml:space="preserve">
+    <value>Extracción de texto rápida y confiable</value>
+  </data>
+  <data name="DocVal.OllamaVisionDesc" xml:space="preserve">
+    <value>Análisis de IA avanzado con mejor comprensión del contexto</value>
+  </data>
+  <data name="DocVal.Privacy" xml:space="preserve">
+    <value>Privacidad</value>
+  </data>
+  <data name="DocVal.PrivacyDesc" xml:space="preserve">
+    <value>Los documentos se procesan en memoria y no se almacenan en el servidor. Ollama se ejecuta localmente en su máquina.</value>
+  </data>
+  <data name="DocVal.ValidationResults" xml:space="preserve">
+    <value>Resultados de Validación</value>
+  </data>
+  <data name="DocVal.DocumentInformation" xml:space="preserve">
+    <value>Información del Documento</value>
+  </data>
+  <data name="DocVal.DocumentType" xml:space="preserve">
+    <value>Tipo de Documento:</value>
+  </data>
+  <data name="DocVal.Description" xml:space="preserve">
+    <value>Descripción:</value>
+  </data>
+  <data name="DocVal.DocumentNumber" xml:space="preserve">
+    <value>Número de Documento:</value>
+  </data>
+  <data name="DocVal.ExpirationDate" xml:space="preserve">
+    <value>Fecha de Vencimiento:</value>
+  </data>
+  <data name="DocVal.IssuingAuthority" xml:space="preserve">
+    <value>Autoridad Emisora:</value>
+  </data>
+  <data name="DocVal.ValidationMessages" xml:space="preserve">
+    <value>Mensajes de Validación</value>
+  </data>
+  <data name="DocVal.NoValidationMessages" xml:space="preserve">
+    <value>No hay mensajes de validación.</value>
+  </data>
+  <data name="DocVal.ExtractedText" xml:space="preserve">
+    <value>Texto Extraído</value>
+  </data>
+  <data name="DocVal.ValidationFailed" xml:space="preserve">
+    <value>Validación Fallida</value>
+  </data>
+  <data name="DocVal.FileSizeError" xml:space="preserve">
+    <value>El tamaño del archivo excede el tamaño máximo permitido de 10MB. Su archivo es de {0}MB.</value>
+  </data>
+  <data name="DocVal.InvalidFileType" xml:space="preserve">
+    <value>Tipo de archivo no válido. Por favor cargue archivos PDF o de imagen (PNG, JPG, JPEG).</value>
+  </data>
+  <data name="DocVal.ProcessingError" xml:space="preserve">
+    <value>Error al procesar el archivo: {0}</value>
+  </data>
+  <data name="DocVal.ShowPreview" xml:space="preserve">
+    <value>Mostrar Vista Previa</value>
+  </data>
+  <data name="DocVal.HidePreview" xml:space="preserve">
+    <value>Ocultar Vista Previa</value>
+  </data>
+  <data name="DocVal.ImagePreview" xml:space="preserve">
+    <value>Vista Previa de Imagen</value>
+  </data>
+  
+  <!-- Common -->
+  <data name="Common.Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+</root>
