@@ -1,0 +1,288 @@
+@page "/face-verification"
+@using DocumentValidation.Models
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Face Verification</PageTitle>
+
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-shield-check"></i> Face Verification
+    </h1>
+
+    @if (CurrentStep == VerificationStep.UploadID)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Step 1: Upload ID Document Photo</h3>
+                <p class="text-muted">Upload a photo of your ID document (passport, driver's license, etc.)</p>
+                
+                <div class="mb-3">
+                    <label for="idPhoto" class="form-label">Select ID Photo</label>
+                    <InputFile id="idPhoto" OnChange="HandleIdPhotoSelected" accept="image/jpeg,image/png" class="form-control" />
+                </div>
+
+                @if (IdPhotoPreview != null)
+                {
+                    <div class="mt-3">
+                        <h5>Preview:</h5>
+                        <img src="@IdPhotoPreview" alt="ID Document" class="img-thumbnail" style="max-width: 300px;" />
+                        <div class="mt-2">
+                            <button class="btn btn-primary" @onclick="ProceedToFaceCapture">
+                                Next: Capture Live Photo <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (CurrentStep == VerificationStep.CaptureFace)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Step 2: Capture Live Photo</h3>
+                <p class="text-muted">Take a photo of your face for verification</p>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <h5>ID Document Photo</h5>
+                        @if (IdPhotoPreview != null)
+                        {
+                            <img src="@IdPhotoPreview" alt="ID Document" class="img-thumbnail" style="max-width: 100%;" />
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Live Photo Capture</h5>
+                        <FaceCapture OnPhotoCapture="HandleLivePhotoCapture" OnCancel="CancelCapture" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (CurrentStep == VerificationStep.Processing)
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Processing...</span>
+                </div>
+                <h4>Verifying Face...</h4>
+                <p class="text-muted">Please wait while we compare the photos</p>
+            </div>
+        </div>
+    }
+    else if (CurrentStep == VerificationStep.Results)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Verification Results</h3>
+
+                @if (VerificationResult != null)
+                {
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>ID Document Photo</h5>
+                            <img src="@IdPhotoPreview" alt="ID Document" class="img-thumbnail" style="max-width: 100%;" />
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Captured Photo</h5>
+                            <img src="@LivePhotoPreview" alt="Live Photo" class="img-thumbnail" style="max-width: 100%;" />
+                        </div>
+                    </div>
+
+                    <div class="alert @(VerificationResult.IsMatch ? "alert-success" : "alert-danger")">
+                        <div class="d-flex align-items-center">
+                            <i class="bi @(VerificationResult.IsMatch ? "bi-check-circle-fill" : "bi-x-circle-fill") fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-1">@(VerificationResult.IsMatch ? "✓ Verification Successful" : "✗ Verification Failed")</h4>
+                                <p class="mb-0">@VerificationResult.Message</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5>Confidence Score</h5>
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar @GetProgressBarClass(VerificationResult.ConfidenceScore)" 
+                                     role="progressbar" 
+                                     style="width: @VerificationResult.ConfidenceScore%"
+                                     aria-valuenow="@VerificationResult.ConfidenceScore" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    @VerificationResult.ConfidenceScore.ToString("F1")%
+                                </div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">
+                                Minimum threshold: 70%
+                            </small>
+                        </div>
+                    </div>
+
+                    @if (VerificationResult.Warnings.Any())
+                    {
+                        <div class="alert alert-warning">
+                            <h5><i class="bi bi-exclamation-triangle"></i> Warnings:</h5>
+                            <ul class="mb-0">
+                                @foreach (var warning in VerificationResult.Warnings)
+                                {
+                                    <li>@warning</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="text-muted small">
+                        <p>Verification timestamp: @VerificationResult.VerificationTimestamp.ToString("yyyy-MM-dd HH:mm:ss UTC")</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary" @onclick="StartNewVerification">
+                            <i class="bi bi-arrow-clockwise"></i> Start New Verification
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger mt-3">
+            <i class="bi bi-exclamation-circle"></i> @ErrorMessage
+        </div>
+    }
+</div>
+
+@code {
+    private enum VerificationStep
+    {
+        UploadID,
+        CaptureFace,
+        Processing,
+        Results
+    }
+
+    private VerificationStep CurrentStep = VerificationStep.UploadID;
+    private string? IdPhotoPreview;
+    private string? LivePhotoPreview;
+    private byte[]? IdPhotoData;
+    private byte[]? LivePhotoData;
+    private FaceVerificationResult? VerificationResult;
+    private string? ErrorMessage;
+
+    private async Task HandleIdPhotoSelected(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            ErrorMessage = null;
+            var file = e.File;
+
+            if (file.Size > 10 * 1024 * 1024) // 10MB limit
+            {
+                ErrorMessage = "File size exceeds 10MB limit";
+                return;
+            }
+
+            // Read file to memory
+            using var memoryStream = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(memoryStream);
+            IdPhotoData = memoryStream.ToArray();
+
+            // Create preview
+            IdPhotoPreview = $"data:{file.ContentType};base64,{Convert.ToBase64String(IdPhotoData)}";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error loading ID photo: {ex.Message}";
+        }
+    }
+
+    private void ProceedToFaceCapture()
+    {
+        CurrentStep = VerificationStep.CaptureFace;
+    }
+
+    private async Task HandleLivePhotoCapture(string photoDataUrl)
+    {
+        try
+        {
+            LivePhotoPreview = photoDataUrl;
+            
+            // Convert data URL to byte array
+            var base64Data = photoDataUrl.Split(',')[1];
+            LivePhotoData = Convert.FromBase64String(base64Data);
+
+            // Proceed to verification
+            await PerformVerificationAsync();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error processing live photo: {ex.Message}";
+        }
+    }
+
+    private void CancelCapture()
+    {
+        CurrentStep = VerificationStep.UploadID;
+        LivePhotoPreview = null;
+        LivePhotoData = null;
+    }
+
+    private async Task PerformVerificationAsync()
+    {
+        try
+        {
+            CurrentStep = VerificationStep.Processing;
+            ErrorMessage = null;
+            StateHasChanged();
+
+            // Create multipart form data
+            using var formData = new MultipartFormDataContent();
+            
+            formData.Add(new ByteArrayContent(IdPhotoData!), "idPhoto", "id-photo.jpg");
+            formData.Add(new ByteArrayContent(LivePhotoData!), "livePhoto", "live-photo.jpg");
+            formData.Add(new StringContent(Guid.NewGuid().ToString()), "documentId");
+
+            // Call API
+            var response = await HttpClient.PostAsync("/api/FaceVerification/verify", formData);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                VerificationResult = await response.Content.ReadFromJsonAsync<FaceVerificationResult>();
+                CurrentStep = VerificationStep.Results;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ErrorMessage = $"Verification failed: {errorContent}";
+                CurrentStep = VerificationStep.CaptureFace;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error during verification: {ex.Message}";
+            CurrentStep = VerificationStep.CaptureFace;
+        }
+    }
+
+    private void StartNewVerification()
+    {
+        CurrentStep = VerificationStep.UploadID;
+        IdPhotoPreview = null;
+        LivePhotoPreview = null;
+        IdPhotoData = null;
+        LivePhotoData = null;
+        VerificationResult = null;
+        ErrorMessage = null;
+    }
+
+    private string GetProgressBarClass(double score)
+    {
+        if (score >= 80) return "bg-success";
+        if (score >= 70) return "bg-info";
+        if (score >= 50) return "bg-warning";
+        return "bg-danger";
+    }
+}
