@@ -1,10 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\DocumentValidation.Example",
-    "\\DocumentValidation.FaceMatching",
-    "\\DocumentValidation.FaceMatching.Tests"
+    ""
   ],
-  "SelectedNode": "\\DocumentValidation.FaceMatching.Tests\\VerificationDecisionTests.cs",
+  "SelectedNode": "\\C:\\Users\\aleja\\source\\repos\\documentvalidation\\improved_face_matching",
   "PreviewInSolutionExplorer": false
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DocumentValidation.FaceMatching")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7bc43df2997001992100646b80df7abebde944d4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+004e30bdfa6f6ca01c76d0188ac167ddd648c49c")]
 [assembly: System.Reflection.AssemblyProductAttribute("DocumentValidation.FaceMatching")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DocumentValidation.FaceMatching")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
