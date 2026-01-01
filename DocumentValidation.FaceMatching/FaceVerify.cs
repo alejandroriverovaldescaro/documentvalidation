@@ -37,6 +37,16 @@ public class FaceVerify
         {
             _logger.LogInformation("Using {VerificationMethod} verification method", _verificationMethod);
 
+            // If Azure Face API is requested but credentials are not configured, fall back to simulated
+            if (_verificationMethod == VerificationMethod.AzureFaceAPI && 
+                (string.IsNullOrEmpty(_faceApiEndpoint) || string.IsNullOrEmpty(_faceApiKey)))
+            {
+                _logger.LogWarning(
+                    "Azure Face API credentials not configured. Falling back to simulated verification. " +
+                    "To use Azure Face API, configure FaceApiEndpoint and FaceApiKey in FaceMatchingOptions.");
+                return await SimulateVerificationAsync(selfieImage, idImage);
+            }
+
             return _verificationMethod switch
             {
                 VerificationMethod.Simulated => await SimulateVerificationAsync(selfieImage, idImage),
