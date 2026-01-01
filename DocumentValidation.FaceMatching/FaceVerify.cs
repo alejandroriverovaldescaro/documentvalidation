@@ -91,6 +91,7 @@ public class FaceVerify
             var selfieDetect = selfieDetectResponse.Value;
             var idDetect = idDetectResponse.Value;
 
+            // Check if faces were detected
             if (selfieDetect.Count == 0)
             {
                 _logger.LogWarning("No face detected in selfie image");
@@ -103,9 +104,13 @@ public class FaceVerify
                 return 0.0;
             }
 
+            // Get the first detected face from each image
+            var selfieFace = selfieDetect[0];
+            var idFace = idDetect[0];
+
             // Get face IDs
-            var selfieFaceId = selfieDetect[0].FaceId;
-            var idFaceId = idDetect[0].FaceId;
+            var selfieFaceId = selfieFace.FaceId;
+            var idFaceId = idFace.FaceId;
 
             if (selfieFaceId == null || idFaceId == null)
             {
@@ -132,7 +137,8 @@ public class FaceVerify
         catch (RequestFailedException ex)
         {
             _logger.LogError(ex, "Azure Face API request failed: {Message}", ex.Message);
-            throw new InvalidOperationException($"Azure Face API verification failed: {ex.Message}", ex);
+            // Re-throw the original exception to preserve error details for caller
+            throw;
         }
     }
 
@@ -150,8 +156,8 @@ public class FaceVerify
         double similarity = 1.0 - sizeDifference;
         
         // Add some randomness to simulate real API behavior
-        var random = new Random();
-        double noise = (random.NextDouble() - 0.5) * 0.1; // ±5%
+        // Use Random.Shared (thread-safe) instead of new Random() for better randomness
+        double noise = (Random.Shared.NextDouble() - 0.5) * 0.1; // ±5%
         
         double confidence = Math.Max(0.0, Math.Min(1.0, 0.75 + noise)); // Base confidence around 75%
         
