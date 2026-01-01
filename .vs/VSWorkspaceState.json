@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\DocumentValidation.Example",
+    "\\DocumentValidation.FaceMatching",
+    "\\DocumentValidation.FaceMatching.Tests"
+  ],
+  "SelectedNode": "\\DocumentValidation.FaceMatching.Tests\\VerificationDecisionTests.cs",
+  "PreviewInSolutionExplorer": false
+}
