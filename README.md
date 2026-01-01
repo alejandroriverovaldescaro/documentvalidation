@@ -122,11 +122,29 @@ See [DocumentValidation.FaceMatching/README.md](DocumentValidation.FaceMatching/
 
 ## 🔧 Configuration
 
-### Azure Face API (Optional)
+### Verification Methods
+
+The library supports two verification methods:
+
+#### 1. Simulated Verification (Default)
+Perfect for testing and development without API credentials:
 
 ```csharp
 services.AddFaceMatching(options =>
 {
+    // VerificationMethod.Simulated is the default
+    options.BurstFrameCount = 10;
+    options.FrameDelayMs = 100;
+});
+```
+
+#### 2. Azure Face API (Production)
+For production deployments with real face recognition:
+
+```csharp
+services.AddFaceMatching(options =>
+{
+    options.VerificationMethod = VerificationMethod.AzureFaceAPI;
     options.FaceApiEndpoint = "https://your-endpoint.cognitiveservices.azure.com/";
     options.FaceApiKey = "your-api-key";
     options.BurstFrameCount = 10;
@@ -134,7 +152,7 @@ services.AddFaceMatching(options =>
 });
 ```
 
-Without API credentials, the system uses simulation mode for testing.
+Both methods use the same API surface, making it easy to switch between testing and production.
 
 ## 🧪 Testing
 

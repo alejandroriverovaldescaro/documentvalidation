@@ -26,7 +26,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<FaceVerify>(sp =>
         {
             var logger = sp.GetRequiredService<ILogger<FaceVerify>>();
-            return new FaceVerify(logger, options.FaceApiEndpoint, options.FaceApiKey);
+            return new FaceVerify(
+                logger, 
+                options.VerificationMethod,
+                options.FaceApiEndpoint, 
+                options.FaceApiKey);
         });
 
         services.AddSingleton<FaceMatchingService>();
