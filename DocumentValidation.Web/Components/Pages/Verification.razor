@@ -239,6 +239,7 @@
     private VerificationResult? verificationResult = null;
     private bool isProcessing = false;
     private bool isCameraActive = false;
+    private bool pendingCameraStart = false;
     private IJSObjectReference? cameraModule;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -246,6 +247,22 @@
         if (firstRender)
         {
             cameraModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./camera.js");
+        }
+        
+        // Initialize camera after render if pending
+        if (pendingCameraStart && isCameraActive && cameraModule != null)
+        {
+            pendingCameraStart = false;
+            try
+            {
+                await cameraModule.InvokeVoidAsync("startCamera");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error starting camera: {ex.Message}");
+                isCameraActive = false;
+                StateHasChanged();
+            }
         }
     }
 
@@ -256,19 +273,14 @@
 
     private async Task StartCamera()
     {
-        try
+        if (cameraModule != null)
         {
-            if (cameraModule != null)
-            {
-                await cameraModule.InvokeVoidAsync("startCamera");
-                isCameraActive = true;
-                StateHasChanged();
-            }
+            // Set flags to trigger render and initialize camera after render completes
+            isCameraActive = true;
+            pendingCameraStart = true;
+            StateHasChanged();
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error starting camera: {ex.Message}");
-        }
+        await Task.CompletedTask;
     }
 
     private async Task StopCamera()
