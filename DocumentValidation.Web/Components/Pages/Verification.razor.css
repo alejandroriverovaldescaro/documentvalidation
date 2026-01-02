@@ -173,6 +173,11 @@ h2 {
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
+.btn-capture {
+    font-size: 1.2rem;
+    padding: 1rem 2.5rem;
+}
+
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
@@ -312,6 +317,53 @@ h2 {
 
 .detail-value.error {
     color: #ef4444;
+}
+
+/* Camera styles */
+.camera-container {
+    margin: 2rem 0;
+}
+
+.camera-placeholder {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 3px dashed #d1d5db;
+}
+
+.camera-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: #000;
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.camera-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.camera-controls .btn {
+    width: auto;
+    min-width: 200px;
 }
 
 @media (max-width: 640px) {

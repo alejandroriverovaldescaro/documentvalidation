@@ -5,8 +5,11 @@
 @using SixLabors.ImageSharp.PixelFormats
 @using SixLabors.ImageSharp.Processing
 @using VerificationDecisionEnum = DocumentValidation.FaceMatching.Models.VerificationDecision
+@using Microsoft.JSInterop
 @inject FaceMatchingService FaceMatchingService
+@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+@implements IAsyncDisposable
 
 <PageTitle>Identity Verification</PageTitle>
 
@@ -59,13 +62,36 @@
                     Look at the camera and capture a clear photo of your face
                 </p>
                 
-                <div class="image-upload-zone">
-                    <div class="upload-icon">📷</div>
-                    <p>For demo purposes, click below to simulate selfie capture</p>
-                    <InputFile OnChange="HandleSelfieCapture" class="file-input" id="selfie-upload" accept="image/*" />
-                    <label for="selfie-upload" class="btn btn-secondary">
-                        Capture Selfie (Simulated)
-                    </label>
+                <div class="camera-container">
+                    @if (!isCameraActive)
+                    {
+                        <div class="camera-placeholder">
+                            <div class="camera-icon">📷</div>
+                            <p>Click below to activate your camera</p>
+                            <button class="btn btn-primary" @onclick="StartCamera">
+                                Start Camera
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="video-wrapper">
+                            <video id="webcam" autoplay playsinline></video>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                        </div>
+                        
+                        @if (!selfieFrames.Any())
+                        {
+                            <div class="camera-controls">
+                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie">
+                                    📸 Capture Photo
+                                </button>
+                                <button class="btn btn-secondary" @onclick="StopCamera">
+                                    Cancel
+                                </button>
+                            </div>
+                        }
+                    }
                 </div>
 
                 @if (selfieFrames.Any())
@@ -74,9 +100,14 @@
                         <div class="preview-badge">✓ Selfie Captured</div>
                         <p class="preview-text">@selfieFrames.Count frame(s) captured</p>
                     </div>
-                    <button class="btn btn-primary" @onclick="ProceedToIdUpload">
-                        Continue to ID Upload
-                    </button>
+                    <div class="camera-controls">
+                        <button class="btn btn-primary" @onclick="ProceedToIdUpload">
+                            Continue to ID Upload
+                        </button>
+                        <button class="btn btn-secondary" @onclick="RetakeSelfie">
+                            Retake Photo
+                        </button>
+                    </div>
                 }
             </div>
         }
@@ -207,38 +238,96 @@
     private byte[]? idPhoto = null;
     private VerificationResult? verificationResult = null;
     private bool isProcessing = false;
+    private bool isCameraActive = false;
+    private IJSObjectReference? cameraModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            cameraModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./camera.js");
+        }
+    }
 
     private void StartVerification()
     {
         currentStep = VerificationStep.CaptureSelfie;
     }
 
-    private async Task HandleSelfieCapture(InputFileChangeEventArgs e)
+    private async Task StartCamera()
     {
         try
         {
-            selfieFrames.Clear();
-            
-            var file = e.File;
-            if (file != null)
+            if (cameraModule != null)
             {
-                // Read the uploaded file
-                using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
-                using var memoryStream = new MemoryStream();
-                await stream.CopyToAsync(memoryStream);
-                var imageBytes = memoryStream.ToArray();
+                await cameraModule.InvokeVoidAsync("startCamera");
+                isCameraActive = true;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error starting camera: {ex.Message}");
+        }
+    }
 
-                // Simulate burst capture by creating 5 frames from the single image
+    private async Task StopCamera()
+    {
+        try
+        {
+            if (cameraModule != null && isCameraActive)
+            {
+                await cameraModule.InvokeVoidAsync("stopCamera");
+                isCameraActive = false;
+                currentStep = VerificationStep.Initial;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error stopping camera: {ex.Message}");
+        }
+    }
+
+    private async Task CaptureSelfie()
+    {
+        try
+        {
+            if (cameraModule != null)
+            {
+                selfieFrames.Clear();
+                
+                // Capture burst of 5 frames with small delay between each
                 for (int i = 0; i < 5; i++)
                 {
+                    var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
+                    
+                    // Convert base64 data URL to bytes
+                    var base64Data = imageDataUrl.Split(',')[1];
+                    var imageBytes = Convert.FromBase64String(base64Data);
                     selfieFrames.Add(imageBytes);
+                    
+                    // Small delay between captures for burst mode
+                    if (i < 4)
+                    {
+                        await Task.Delay(200);
+                    }
                 }
+                
+                await StopCamera();
+                StateHasChanged();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error capturing selfie: {ex.Message}");
         }
+    }
+
+    private async Task RetakeSelfie()
+    {
+        selfieFrames.Clear();
+        await StartCamera();
     }
 
     private void ProceedToIdUpload()
@@ -298,5 +387,26 @@
         idPhoto = null;
         verificationResult = null;
         isProcessing = false;
+        isCameraActive = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (isCameraActive && cameraModule != null)
+        {
+            try
+            {
+                await cameraModule.InvokeVoidAsync("stopCamera");
+            }
+            catch
+            {
+                // Ignore errors during disposal
+            }
+        }
+
+        if (cameraModule != null)
+        {
+            await cameraModule.DisposeAsync();
+        }
     }
 }
