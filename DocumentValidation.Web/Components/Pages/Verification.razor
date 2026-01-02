@@ -63,6 +63,13 @@
                 </p>
                 
                 <div class="camera-container">
+                    @if (errorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <strong>⚠️ Error:</strong> @errorMessage
+                        </div>
+                    }
+                    
                     @if (!isCameraActive)
                     {
                         <div class="camera-placeholder">
@@ -83,10 +90,18 @@
                         @if (!selfieFrames.Any())
                         {
                             <div class="camera-controls">
-                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie">
-                                    📸 Capture Photo
+                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie" disabled="@isCapturing">
+                                    @if (isCapturing)
+                                    {
+                                        <span class="spinner"></span>
+                                        <span>Capturing...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>📸 Capture Photo</span>
+                                    }
                                 </button>
-                                <button class="btn btn-secondary" @onclick="StopCamera">
+                                <button class="btn btn-secondary" @onclick="StopCamera" disabled="@isCapturing">
                                     Cancel
                                 </button>
                             </div>
@@ -241,6 +256,11 @@
     private bool isCameraActive = false;
     private bool pendingCameraStart = false;
     private IJSObjectReference? cameraModule;
+    private string? errorMessage = null;
+    private bool isCapturing = false;
+    
+    // Constants for capture timing
+    private const int CaptureDelayMs = 200; // Delay between burst capture frames
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -303,8 +323,14 @@
 
     private async Task CaptureSelfie()
     {
+        if (isCapturing) return; // Prevent multiple simultaneous captures
+        
         try
         {
+            isCapturing = true;
+            errorMessage = null;
+            StateHasChanged();
+            
             if (cameraModule != null)
             {
                 selfieFrames.Clear();
@@ -312,17 +338,42 @@
                 // Capture burst of 5 frames with small delay between each
                 for (int i = 0; i < 5; i++)
                 {
-                    var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
-                    
-                    // Convert base64 data URL to bytes
-                    var base64Data = imageDataUrl.Split(',')[1];
-                    var imageBytes = Convert.FromBase64String(base64Data);
-                    selfieFrames.Add(imageBytes);
-                    
-                    // Small delay between captures for burst mode
-                    if (i < 4)
+                    try
                     {
-                        await Task.Delay(200);
+                        var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
+                        
+                        // Validate data URL format (should be "data:image/jpeg;base64,...")
+                        if (string.IsNullOrEmpty(imageDataUrl) || 
+                            !imageDataUrl.StartsWith("data:image/") ||
+                            !imageDataUrl.Contains(","))
+                        {
+                            throw new InvalidOperationException("Invalid image data received from camera.");
+                        }
+                        
+                        var base64Data = imageDataUrl.Split(',')[1];
+                        var imageBytes = Convert.FromBase64String(base64Data);
+                        selfieFrames.Add(imageBytes);
+                        
+                        // Small delay between captures for burst mode
+                        if (i < 4)
+                        {
+                            await Task.Delay(CaptureDelayMs);
+                        }
+                    }
+                    catch (TaskCanceledException ex)
+                    {
+                        // Handle task cancellation gracefully - preserve original exception
+                        throw new InvalidOperationException("The connection was interrupted. Please try again.", ex);
+                    }
+                    catch (JSException ex)
+                    {
+                        // Handle JavaScript errors - preserve original exception
+                        throw new InvalidOperationException($"Camera error: {ex.Message}", ex);
+                    }
+                    catch (FormatException ex)
+                    {
+                        // Handle base64 conversion errors
+                        throw new InvalidOperationException("Invalid image format received from camera.", ex);
                     }
                 }
                 
@@ -330,15 +381,34 @@
                 StateHasChanged();
             }
         }
+        catch (InvalidOperationException ex)
+        {
+            // Display user-friendly error message
+            errorMessage = ex.Message;
+            selfieFrames.Clear();
+            Console.WriteLine($"Error capturing selfie: {ex.Message}");
+            await StopCamera();
+            StateHasChanged();
+        }
         catch (Exception ex)
         {
+            // Handle unexpected errors
+            errorMessage = "An unexpected error occurred while capturing your selfie. Please refresh the page and try again.";
+            selfieFrames.Clear();
             Console.WriteLine($"Error capturing selfie: {ex.Message}");
+            await StopCamera();
+            StateHasChanged();
+        }
+        finally
+        {
+            isCapturing = false;
         }
     }
 
     private async Task RetakeSelfie()
     {
         selfieFrames.Clear();
+        errorMessage = null;
         await StartCamera();
     }
 
@@ -400,6 +470,8 @@
         verificationResult = null;
         isProcessing = false;
         isCameraActive = false;
+        errorMessage = null;
+        isCapturing = false;
     }
 
     public async ValueTask DisposeAsync()
