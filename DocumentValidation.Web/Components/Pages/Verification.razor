@@ -339,7 +339,12 @@
                     {
                         var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
                         
-                        // Convert base64 data URL to bytes
+                        // Validate and convert base64 data URL to bytes
+                        if (string.IsNullOrEmpty(imageDataUrl) || !imageDataUrl.Contains(','))
+                        {
+                            throw new InvalidOperationException("Invalid image data received from camera.");
+                        }
+                        
                         var base64Data = imageDataUrl.Split(',')[1];
                         var imageBytes = Convert.FromBase64String(base64Data);
                         selfieFrames.Add(imageBytes);
@@ -350,15 +355,20 @@
                             await Task.Delay(200);
                         }
                     }
-                    catch (TaskCanceledException)
+                    catch (TaskCanceledException ex)
                     {
-                        // Handle task cancellation gracefully
-                        throw new InvalidOperationException("The connection was interrupted. Please try again.");
+                        // Handle task cancellation gracefully - preserve original exception
+                        throw new InvalidOperationException("The connection was interrupted. Please try again.", ex);
                     }
-                    catch (JSException jsEx)
+                    catch (JSException ex)
                     {
-                        // Handle JavaScript errors
-                        throw new InvalidOperationException($"Camera error: {jsEx.Message}");
+                        // Handle JavaScript errors - preserve original exception
+                        throw new InvalidOperationException($"Camera error: {ex.Message}", ex);
+                    }
+                    catch (FormatException ex)
+                    {
+                        // Handle base64 conversion errors
+                        throw new InvalidOperationException("Invalid image format received from camera.", ex);
                     }
                 }
                 

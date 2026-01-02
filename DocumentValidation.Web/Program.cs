@@ -3,6 +3,15 @@ using DocumentValidation.FaceMatching;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// SignalR configuration constants for camera operations
+const int MaxDisconnectedCircuits = 100; // Number of disconnected circuits to retain
+const int CircuitRetentionMinutes = 3; // How long to retain disconnected circuits
+const int JSInteropTimeoutMinutes = 2; // Timeout for JavaScript interop calls (camera capture)
+const int ClientTimeoutSeconds = 60; // Client connection timeout
+const int HandshakeTimeoutSeconds = 30; // Initial handshake timeout
+const int KeepAliveIntervalSeconds = 15; // How often to send keep-alive pings
+const int MaxImageSizeBytes = 10 * 1024 * 1024; // Maximum message size (10MB for images)
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -12,17 +21,17 @@ builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options =>
     {
         // Increase timeouts to handle camera capture operations
-        options.DisconnectedCircuitMaxRetained = 100;
-        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
-        options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(2);
+        options.DisconnectedCircuitMaxRetained = MaxDisconnectedCircuits;
+        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(CircuitRetentionMinutes);
+        options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(JSInteropTimeoutMinutes);
     })
     .AddHubOptions(options =>
     {
-        // Configure hub connection timeouts
-        options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-        options.HandshakeTimeout = TimeSpan.FromSeconds(30);
-        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-        options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB for images
+        // Configure hub connection timeouts to prevent disconnections during camera operations
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(ClientTimeoutSeconds);
+        options.HandshakeTimeout = TimeSpan.FromSeconds(HandshakeTimeoutSeconds);
+        options.KeepAliveInterval = TimeSpan.FromSeconds(KeepAliveIntervalSeconds);
+        options.MaximumReceiveMessageSize = MaxImageSizeBytes;
     });
 
 // Add Face Matching services
