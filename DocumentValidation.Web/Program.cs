@@ -7,6 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Configure SignalR for Blazor Server with extended timeouts for camera operations
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options =>
+    {
+        // Increase timeouts to handle camera capture operations
+        options.DisconnectedCircuitMaxRetained = 100;
+        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+        options.JSInteropDefaultCallTimeout = TimeSpan.FromMinutes(2);
+    })
+    .AddHubOptions(options =>
+    {
+        // Configure hub connection timeouts
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+        options.HandshakeTimeout = TimeSpan.FromSeconds(30);
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB for images
+    });
+
 // Add Face Matching services
 builder.Services.AddFaceMatching(options =>
 {

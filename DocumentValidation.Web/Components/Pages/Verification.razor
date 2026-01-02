@@ -63,6 +63,13 @@
                 </p>
                 
                 <div class="camera-container">
+                    @if (errorMessage != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <strong>⚠️ Error:</strong> @errorMessage
+                        </div>
+                    }
+                    
                     @if (!isCameraActive)
                     {
                         <div class="camera-placeholder">
@@ -83,10 +90,18 @@
                         @if (!selfieFrames.Any())
                         {
                             <div class="camera-controls">
-                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie">
-                                    📸 Capture Photo
+                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie" disabled="@isCapturing">
+                                    @if (isCapturing)
+                                    {
+                                        <span class="spinner"></span>
+                                        <span>Capturing...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>📸 Capture Photo</span>
+                                    }
                                 </button>
-                                <button class="btn btn-secondary" @onclick="StopCamera">
+                                <button class="btn btn-secondary" @onclick="StopCamera" disabled="@isCapturing">
                                     Cancel
                                 </button>
                             </div>
@@ -241,6 +256,8 @@
     private bool isCameraActive = false;
     private bool pendingCameraStart = false;
     private IJSObjectReference? cameraModule;
+    private string? errorMessage = null;
+    private bool isCapturing = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -303,8 +320,14 @@
 
     private async Task CaptureSelfie()
     {
+        if (isCapturing) return; // Prevent multiple simultaneous captures
+        
         try
         {
+            isCapturing = true;
+            errorMessage = null;
+            StateHasChanged();
+            
             if (cameraModule != null)
             {
                 selfieFrames.Clear();
@@ -312,17 +335,30 @@
                 // Capture burst of 5 frames with small delay between each
                 for (int i = 0; i < 5; i++)
                 {
-                    var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
-                    
-                    // Convert base64 data URL to bytes
-                    var base64Data = imageDataUrl.Split(',')[1];
-                    var imageBytes = Convert.FromBase64String(base64Data);
-                    selfieFrames.Add(imageBytes);
-                    
-                    // Small delay between captures for burst mode
-                    if (i < 4)
+                    try
                     {
-                        await Task.Delay(200);
+                        var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
+                        
+                        // Convert base64 data URL to bytes
+                        var base64Data = imageDataUrl.Split(',')[1];
+                        var imageBytes = Convert.FromBase64String(base64Data);
+                        selfieFrames.Add(imageBytes);
+                        
+                        // Small delay between captures for burst mode
+                        if (i < 4)
+                        {
+                            await Task.Delay(200);
+                        }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Handle task cancellation gracefully
+                        throw new InvalidOperationException("The connection was interrupted. Please try again.");
+                    }
+                    catch (JSException jsEx)
+                    {
+                        // Handle JavaScript errors
+                        throw new InvalidOperationException($"Camera error: {jsEx.Message}");
                     }
                 }
                 
@@ -330,15 +366,34 @@
                 StateHasChanged();
             }
         }
+        catch (InvalidOperationException ex)
+        {
+            // Display user-friendly error message
+            errorMessage = ex.Message;
+            selfieFrames.Clear();
+            Console.WriteLine($"Error capturing selfie: {ex.Message}");
+            await StopCamera();
+            StateHasChanged();
+        }
         catch (Exception ex)
         {
+            // Handle unexpected errors
+            errorMessage = "An unexpected error occurred while capturing your selfie. Please refresh the page and try again.";
+            selfieFrames.Clear();
             Console.WriteLine($"Error capturing selfie: {ex.Message}");
+            await StopCamera();
+            StateHasChanged();
+        }
+        finally
+        {
+            isCapturing = false;
         }
     }
 
     private async Task RetakeSelfie()
     {
         selfieFrames.Clear();
+        errorMessage = null;
         await StartCamera();
     }
 
@@ -400,6 +455,8 @@
         verificationResult = null;
         isProcessing = false;
         isCameraActive = false;
+        errorMessage = null;
+        isCapturing = false;
     }
 
     public async ValueTask DisposeAsync()
