@@ -1,17 +1,38 @@
 namespace DocumentValidation.FaceMatching;
 
 /// <summary>
+/// Verification method to use for face matching
+/// </summary>
+public enum VerificationMethod
+{
+    /// <summary>
+    /// Use simulated verification (for testing without API credentials)
+    /// </summary>
+    Simulated,
+    
+    /// <summary>
+    /// Use Azure Face API for real face verification
+    /// </summary>
+    AzureFaceAPI
+}
+
+/// <summary>
 /// Configuration options for face matching service
 /// </summary>
 public class FaceMatchingOptions
 {
     /// <summary>
-    /// Azure Face API endpoint (optional, uses simulation if not provided)
+    /// Verification method to use (default: Simulated)
+    /// </summary>
+    public VerificationMethod VerificationMethod { get; set; } = VerificationMethod.Simulated;
+
+    /// <summary>
+    /// Azure Face API endpoint (required when using AzureFaceAPI method)
     /// </summary>
     public string? FaceApiEndpoint { get; set; }
 
     /// <summary>
-    /// Azure Face API key (optional, uses simulation if not provided)
+    /// Azure Face API key (required when using AzureFaceAPI method)
     /// </summary>
     public string? FaceApiKey { get; set; }
 

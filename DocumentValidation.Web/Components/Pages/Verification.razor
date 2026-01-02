@@ -1,0 +1,412 @@
+@page "/verification"
+@using DocumentValidation.FaceMatching
+@using DocumentValidation.FaceMatching.Models
+@using SixLabors.ImageSharp
+@using SixLabors.ImageSharp.PixelFormats
+@using SixLabors.ImageSharp.Processing
+@using VerificationDecisionEnum = DocumentValidation.FaceMatching.Models.VerificationDecision
+@using Microsoft.JSInterop
+@inject FaceMatchingService FaceMatchingService
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+
+<PageTitle>Identity Verification</PageTitle>
+
+<div class="verification-container">
+    <div class="verification-card">
+        <div class="header">
+            <h1>🎭 Identity Verification</h1>
+            <p class="subtitle">Verify your identity by capturing a selfie and uploading your ID photo</p>
+        </div>
+
+        @if (currentStep == VerificationStep.Initial)
+        {
+            <div class="step-content">
+                <div class="icon-container">
+                    <span class="icon">📸</span>
+                </div>
+                <h2>Welcome to Identity Verification</h2>
+                <p class="description">
+                    We'll guide you through a quick 2-step process:
+                </p>
+                <div class="steps-list">
+                    <div class="step-item">
+                        <span class="step-number">1</span>
+                        <div class="step-text">
+                            <strong>Capture Selfie</strong>
+                            <span>Take a quick photo of yourself</span>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-number">2</span>
+                        <div class="step-text">
+                            <strong>Upload ID Photo</strong>
+                            <span>Upload a photo from your government-issued ID</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" @onclick="StartVerification">
+                    Start Verification
+                </button>
+            </div>
+        }
+        else if (currentStep == VerificationStep.CaptureSelfie)
+        {
+            <div class="step-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 33%"></div>
+                </div>
+                <h2>Step 1: Capture Your Selfie</h2>
+                <p class="description">
+                    Look at the camera and capture a clear photo of your face
+                </p>
+                
+                <div class="camera-container">
+                    @if (!isCameraActive)
+                    {
+                        <div class="camera-placeholder">
+                            <div class="camera-icon">📷</div>
+                            <p>Click below to activate your camera</p>
+                            <button class="btn btn-primary" @onclick="StartCamera">
+                                Start Camera
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="video-wrapper">
+                            <video id="webcam" autoplay playsinline></video>
+                            <canvas id="canvas" style="display:none;"></canvas>
+                        </div>
+                        
+                        @if (!selfieFrames.Any())
+                        {
+                            <div class="camera-controls">
+                                <button class="btn btn-primary btn-capture" @onclick="CaptureSelfie">
+                                    📸 Capture Photo
+                                </button>
+                                <button class="btn btn-secondary" @onclick="StopCamera">
+                                    Cancel
+                                </button>
+                            </div>
+                        }
+                    }
+                </div>
+
+                @if (selfieFrames.Any())
+                {
+                    <div class="preview-container">
+                        <div class="preview-badge">✓ Selfie Captured</div>
+                        <p class="preview-text">@selfieFrames.Count frame(s) captured</p>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="btn btn-primary" @onclick="ProceedToIdUpload">
+                            Continue to ID Upload
+                        </button>
+                        <button class="btn btn-secondary" @onclick="RetakeSelfie">
+                            Retake Photo
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+        else if (currentStep == VerificationStep.UploadId)
+        {
+            <div class="step-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 66%"></div>
+                </div>
+                <h2>Step 2: Upload Your ID Photo</h2>
+                <p class="description">
+                    Upload a clear photo of your government-issued ID
+                </p>
+                
+                <div class="image-upload-zone">
+                    <div class="upload-icon">🪪</div>
+                    <p>Select a photo from your ID document</p>
+                    <InputFile OnChange="HandleIdUpload" class="file-input" id="id-upload" accept="image/*" />
+                    <label for="id-upload" class="btn btn-secondary">
+                        Upload ID Photo
+                    </label>
+                </div>
+
+                @if (idPhoto != null)
+                {
+                    <div class="preview-container">
+                        <div class="preview-badge">✓ ID Photo Uploaded</div>
+                    </div>
+                    <button class="btn btn-primary" @onclick="PerformVerification" disabled="@isProcessing">
+                        @if (isProcessing)
+                        {
+                            <span class="spinner"></span>
+                            <span>Verifying...</span>
+                        }
+                        else
+                        {
+                            <span>Verify Identity</span>
+                        }
+                    </button>
+                }
+            </div>
+        }
+        else if (currentStep == VerificationStep.Result)
+        {
+            <div class="step-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%"></div>
+                </div>
+                
+                @if (verificationResult != null)
+                {
+                    @if (verificationResult.Decision == VerificationDecisionEnum.AutoAccept || 
+                         verificationResult.Decision == VerificationDecisionEnum.Accept)
+                    {
+                        <div class="result-container success">
+                            <div class="result-icon">✓</div>
+                            <h2>Verification Successful!</h2>
+                            <p class="result-message">@verificationResult.Message</p>
+                            <div class="result-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Decision:</span>
+                                    <span class="detail-value success">@verificationResult.Decision</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Confidence:</span>
+                                    <span class="detail-value">@verificationResult.Confidence.ToString("P1")</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Match Status:</span>
+                                    <span class="detail-value">@(verificationResult.IsIdentical ? "Verified" : "Not Verified")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (verificationResult.Decision == VerificationDecisionEnum.Retry)
+                    {
+                        <div class="result-container warning">
+                            <div class="result-icon">⚠️</div>
+                            <h2>Please Try Again</h2>
+                            <p class="result-message">@verificationResult.Message</p>
+                            <div class="result-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Confidence:</span>
+                                    <span class="detail-value">@verificationResult.Confidence.ToString("P1")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="result-container error">
+                            <div class="result-icon">✗</div>
+                            <h2>Verification Failed</h2>
+                            <p class="result-message">@verificationResult.Message</p>
+                            <div class="result-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Decision:</span>
+                                    <span class="detail-value error">@verificationResult.Decision</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Confidence:</span>
+                                    <span class="detail-value">@verificationResult.Confidence.ToString("P1")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+                <button class="btn btn-primary" @onclick="ResetVerification">
+                    Start New Verification
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private enum VerificationStep
+    {
+        Initial,
+        CaptureSelfie,
+        UploadId,
+        Result
+    }
+
+    private VerificationStep currentStep = VerificationStep.Initial;
+    private List<byte[]> selfieFrames = new();
+    private byte[]? idPhoto = null;
+    private VerificationResult? verificationResult = null;
+    private bool isProcessing = false;
+    private bool isCameraActive = false;
+    private IJSObjectReference? cameraModule;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            cameraModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./camera.js");
+        }
+    }
+
+    private void StartVerification()
+    {
+        currentStep = VerificationStep.CaptureSelfie;
+    }
+
+    private async Task StartCamera()
+    {
+        try
+        {
+            if (cameraModule != null)
+            {
+                await cameraModule.InvokeVoidAsync("startCamera");
+                isCameraActive = true;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error starting camera: {ex.Message}");
+        }
+    }
+
+    private async Task StopCamera()
+    {
+        try
+        {
+            if (cameraModule != null && isCameraActive)
+            {
+                await cameraModule.InvokeVoidAsync("stopCamera");
+                isCameraActive = false;
+                currentStep = VerificationStep.Initial;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error stopping camera: {ex.Message}");
+        }
+    }
+
+    private async Task CaptureSelfie()
+    {
+        try
+        {
+            if (cameraModule != null)
+            {
+                selfieFrames.Clear();
+                
+                // Capture burst of 5 frames with small delay between each
+                for (int i = 0; i < 5; i++)
+                {
+                    var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
+                    
+                    // Convert base64 data URL to bytes
+                    var base64Data = imageDataUrl.Split(',')[1];
+                    var imageBytes = Convert.FromBase64String(base64Data);
+                    selfieFrames.Add(imageBytes);
+                    
+                    // Small delay between captures for burst mode
+                    if (i < 4)
+                    {
+                        await Task.Delay(200);
+                    }
+                }
+                
+                await StopCamera();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error capturing selfie: {ex.Message}");
+        }
+    }
+
+    private async Task RetakeSelfie()
+    {
+        selfieFrames.Clear();
+        await StartCamera();
+    }
+
+    private void ProceedToIdUpload()
+    {
+        currentStep = VerificationStep.UploadId;
+    }
+
+    private async Task HandleIdUpload(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            if (file != null)
+            {
+                using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                idPhoto = memoryStream.ToArray();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error uploading ID: {ex.Message}");
+        }
+    }
+
+    private async Task PerformVerification()
+    {
+        if (selfieFrames.Any() && idPhoto != null)
+        {
+            try
+            {
+                isProcessing = true;
+                StateHasChanged();
+
+                // Small delay to show processing state
+                await Task.Delay(500);
+
+                verificationResult = await FaceMatchingService.VerifyIdentityAsync(selfieFrames, idPhoto);
+                currentStep = VerificationStep.Result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during verification: {ex.Message}");
+            }
+            finally
+            {
+                isProcessing = false;
+            }
+        }
+    }
+
+    private void ResetVerification()
+    {
+        currentStep = VerificationStep.Initial;
+        selfieFrames.Clear();
+        idPhoto = null;
+        verificationResult = null;
+        isProcessing = false;
+        isCameraActive = false;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (isCameraActive && cameraModule != null)
+        {
+            try
+            {
+                await cameraModule.InvokeVoidAsync("stopCamera");
+            }
+            catch
+            {
+                // Ignore errors during disposal
+            }
+        }
+
+        if (cameraModule != null)
+        {
+            await cameraModule.DisposeAsync();
+        }
+    }
+}

@@ -39,7 +39,16 @@ Or add to your `.csproj`:
 
 ## Quick Start
 
+### Verification Methods
+
+The library supports two verification methods:
+
+1. **Simulated** (default): For testing without API credentials. Returns confidence scores based on simple image similarity.
+2. **AzureFaceAPI**: Production-ready face verification using Azure Cognitive Services Face API.
+
 ### 1. Register Services
+
+#### Using Simulated Verification (Default)
 
 ```csharp
 using DocumentValidation.FaceMatching;
@@ -47,14 +56,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
 
-// Add face matching services
+// Add face matching services with simulated verification
 services.AddFaceMatching(options =>
 {
-    // Optional: Configure Azure Face API
-    options.FaceApiEndpoint = "https://your-endpoint.cognitiveservices.azure.com/";
-    options.FaceApiKey = "your-api-key";
-    
-    // Optional: Configure burst capture
+    // Default verification method is Simulated
     options.BurstFrameCount = 10;
     options.FrameDelayMs = 100;
 });
@@ -63,6 +68,22 @@ services.AddFaceMatching(options =>
 services.AddLogging();
 
 var serviceProvider = services.BuildServiceProvider();
+```
+
+#### Using Azure Face API
+
+```csharp
+services.AddFaceMatching(options =>
+{
+    // Use Azure Face API for production
+    options.VerificationMethod = VerificationMethod.AzureFaceAPI;
+    options.FaceApiEndpoint = "https://your-endpoint.cognitiveservices.azure.com/";
+    options.FaceApiKey = "your-api-key";
+    
+    // Optional: Configure burst capture
+    options.BurstFrameCount = 10;
+    options.FrameDelayMs = 100;
+});
 ```
 
 ### 2. Verify Identity

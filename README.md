@@ -11,6 +11,12 @@ A lightweight, production-ready face matching system for identity verification. 
 
 ## 🚀 Features
 
+### Blazor Web Application
+- **Modern UI**: Clean, responsive interface with gradient design
+- **Guided Workflow**: Step-by-step verification process
+- **Real-time Results**: Instant face matching with confidence scores
+- **Mobile-Friendly**: Responsive design for all devices
+
 ### Intelligent Frame Capture
 - Captures 5-10 frames in burst mode (~1 second)
 - Automatically selects best frame based on:
@@ -48,6 +54,10 @@ documentvalidation/
 │   └── README.md                          # Detailed documentation
 ├── DocumentValidation.FaceMatching.Tests/ # Unit tests
 │   └── VerificationDecisionTests.cs       # Decision logic tests
+├── DocumentValidation.Web/                # Blazor Server web app
+│   ├── Components/Pages/                  # Razor pages
+│   ├── Program.cs                         # Application setup
+│   └── README.md                          # Web app documentation
 ├── DocumentValidation.Example/            # Example console app
 │   └── Program.cs                         # Usage demonstration
 └── README.md                              # This file
@@ -80,7 +90,16 @@ Total tests: 14
      Passed: 14
 ```
 
-### 3. Run Example
+### 3. Run Web Application
+
+```bash
+cd DocumentValidation.Web
+dotnet run
+```
+
+Open your browser to `http://localhost:5000` to access the modern web interface for identity verification.
+
+### 4. Run Console Example
 
 ```bash
 cd DocumentValidation.Example
@@ -122,11 +141,29 @@ See [DocumentValidation.FaceMatching/README.md](DocumentValidation.FaceMatching/
 
 ## 🔧 Configuration
 
-### Azure Face API (Optional)
+### Verification Methods
+
+The library supports two verification methods:
+
+#### 1. Simulated Verification (Default)
+Perfect for testing and development without API credentials:
 
 ```csharp
 services.AddFaceMatching(options =>
 {
+    // VerificationMethod.Simulated is the default
+    options.BurstFrameCount = 10;
+    options.FrameDelayMs = 100;
+});
+```
+
+#### 2. Azure Face API (Production)
+For production deployments with real face recognition:
+
+```csharp
+services.AddFaceMatching(options =>
+{
+    options.VerificationMethod = VerificationMethod.AzureFaceAPI;
     options.FaceApiEndpoint = "https://your-endpoint.cognitiveservices.azure.com/";
     options.FaceApiKey = "your-api-key";
     options.BurstFrameCount = 10;
@@ -134,7 +171,7 @@ services.AddFaceMatching(options =>
 });
 ```
 
-Without API credentials, the system uses simulation mode for testing.
+Both methods use the same API surface, making it easy to switch between testing and production.
 
 ## 🧪 Testing
 

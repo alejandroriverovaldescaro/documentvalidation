@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentValidation.FaceMatc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentValidation.Example", "DocumentValidation.Example\DocumentValidation.Example.csproj", "{C1C596F2-8DAE-4A0E-ABCF-451D7A8ED9F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentValidation.Web", "DocumentValidation.Web\DocumentValidation.Web.csproj", "{E987D178-1E2B-4E0B-B673-6F81950CEF84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{C1C596F2-8DAE-4A0E-ABCF-451D7A8ED9F1}.Release|x64.Build.0 = Release|Any CPU
 		{C1C596F2-8DAE-4A0E-ABCF-451D7A8ED9F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{C1C596F2-8DAE-4A0E-ABCF-451D7A8ED9F1}.Release|x86.Build.0 = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|x64.Build.0 = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Debug|x86.Build.0 = Debug|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|x64.ActiveCfg = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|x64.Build.0 = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|x86.ActiveCfg = Release|Any CPU
+		{E987D178-1E2B-4E0B-B673-6F81950CEF84}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,7 +15,14 @@ var services = new ServiceCollection();
 // Add face matching services
 services.AddFaceMatching(options =>
 {
-    // Optional: Configure Azure Face API
+    // Choose verification method:
+    // - VerificationMethod.Simulated (default): For testing without API credentials
+    // - VerificationMethod.AzureFaceAPI: For production with real face recognition
+    
+    options.VerificationMethod = VerificationMethod.Simulated;
+    
+    // If using AzureFaceAPI, configure credentials:
+    // options.VerificationMethod = VerificationMethod.AzureFaceAPI;
     // options.FaceApiEndpoint = Environment.GetEnvironmentVariable("FACE_API_ENDPOINT");
     // options.FaceApiKey = Environment.GetEnvironmentVariable("FACE_API_KEY");
     

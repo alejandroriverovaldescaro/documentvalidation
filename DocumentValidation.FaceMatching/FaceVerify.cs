@@ -1,20 +1,28 @@
+using Azure;
+using Azure.AI.Vision.Face;
 using Microsoft.Extensions.Logging;
 
 namespace DocumentValidation.FaceMatching;
 
 /// <summary>
-/// Handles face verification using Azure Face API or similar service.
+/// Handles face verification using Azure Face API or simulated verification.
 /// Compares two normalized face images and returns confidence score.
 /// </summary>
 public class FaceVerify
 {
     private readonly ILogger<FaceVerify> _logger;
+    private readonly VerificationMethod _verificationMethod;
     private readonly string? _faceApiEndpoint;
     private readonly string? _faceApiKey;
 
-    public FaceVerify(ILogger<FaceVerify> logger, string? faceApiEndpoint = null, string? faceApiKey = null)
+    public FaceVerify(
+        ILogger<FaceVerify> logger, 
+        VerificationMethod verificationMethod = VerificationMethod.Simulated,
+        string? faceApiEndpoint = null, 
+        string? faceApiKey = null)
     {
         _logger = logger;
+        _verificationMethod = verificationMethod;
         _faceApiEndpoint = faceApiEndpoint;
         _faceApiKey = faceApiKey;
     }
@@ -27,25 +35,119 @@ public class FaceVerify
     {
         try
         {
-            // In production, call Azure Face API or similar service
-            // For now, return simulated confidence score
-            
-            if (string.IsNullOrEmpty(_faceApiEndpoint) || string.IsNullOrEmpty(_faceApiKey))
+            _logger.LogInformation("Using {VerificationMethod} verification method", _verificationMethod);
+
+            // If Azure Face API is requested but credentials are not configured, fall back to simulated
+            if (_verificationMethod == VerificationMethod.AzureFaceAPI && 
+                (string.IsNullOrEmpty(_faceApiEndpoint) || string.IsNullOrEmpty(_faceApiKey)))
             {
-                _logger.LogWarning("Face API credentials not configured, using simulated verification");
+                _logger.LogWarning(
+                    "Azure Face API credentials not configured. Falling back to simulated verification. " +
+                    "To use Azure Face API, configure FaceApiEndpoint and FaceApiKey in FaceMatchingOptions.");
                 return await SimulateVerificationAsync(selfieImage, idImage);
             }
 
-            // Production code would make API call here:
-            // var client = new FaceClient(new Uri(_faceApiEndpoint), new AzureKeyCredential(_faceApiKey));
-            // var result = await client.VerifyFaceToFaceAsync(selfieImage, idImage);
-            // return result.Confidence;
-
-            return await SimulateVerificationAsync(selfieImage, idImage);
+            return _verificationMethod switch
+            {
+                VerificationMethod.Simulated => await SimulateVerificationAsync(selfieImage, idImage),
+                VerificationMethod.AzureFaceAPI => await VerifyWithAzureFaceApiAsync(selfieImage, idImage),
+                _ => throw new InvalidOperationException($"Unknown verification method: {_verificationMethod}")
+            };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Face verification failed");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Verifies faces using Azure Face API.
+    /// </summary>
+    private async Task<double> VerifyWithAzureFaceApiAsync(byte[] selfieImage, byte[] idImage)
+    {
+        if (string.IsNullOrEmpty(_faceApiEndpoint) || string.IsNullOrEmpty(_faceApiKey))
+        {
+            throw new InvalidOperationException(
+                "Azure Face API credentials are required when using AzureFaceAPI verification method. " +
+                "Please configure FaceApiEndpoint and FaceApiKey in FaceMatchingOptions.");
+        }
+
+        _logger.LogInformation("Calling Azure Face API for verification");
+
+        try
+        {
+            // Create Face API client
+            var credential = new AzureKeyCredential(_faceApiKey);
+            var client = new FaceClient(new Uri(_faceApiEndpoint), credential);
+
+            // Detect faces in both images
+            _logger.LogDebug("Detecting face in selfie image");
+            var selfieData = new BinaryData(selfieImage);
+            var selfieDetectResponse = await client.DetectAsync(
+                selfieData,
+                FaceDetectionModel.Detection03,
+                FaceRecognitionModel.Recognition04,
+                returnFaceId: true);
+
+            _logger.LogDebug("Detecting face in ID photo");
+            var idData = new BinaryData(idImage);
+            var idDetectResponse = await client.DetectAsync(
+                idData,
+                FaceDetectionModel.Detection03,
+                FaceRecognitionModel.Recognition04,
+                returnFaceId: true);
+
+            var selfieDetect = selfieDetectResponse.Value;
+            var idDetect = idDetectResponse.Value;
+
+            // Check if faces were detected
+            if (selfieDetect.Count == 0)
+            {
+                _logger.LogWarning("No face detected in selfie image");
+                return 0.0;
+            }
+
+            if (idDetect.Count == 0)
+            {
+                _logger.LogWarning("No face detected in ID photo");
+                return 0.0;
+            }
+
+            // Get the first detected face from each image
+            var selfieFace = selfieDetect[0];
+            var idFace = idDetect[0];
+
+            // Get face IDs
+            var selfieFaceId = selfieFace.FaceId;
+            var idFaceId = idFace.FaceId;
+
+            if (selfieFaceId == null || idFaceId == null)
+            {
+                _logger.LogWarning("Face detection did not return face IDs");
+                return 0.0;
+            }
+
+            // Verify faces
+            _logger.LogDebug("Verifying faces with Azure Face API");
+            var verifyResponse = await client.VerifyFaceToFaceAsync(
+                selfieFaceId.Value,
+                idFaceId.Value);
+
+            var verifyResult = verifyResponse.Value;
+            var confidence = verifyResult.Confidence;
+
+            _logger.LogInformation(
+                "Azure Face API verification complete. IsIdentical: {IsIdentical}, Confidence: {Confidence:F2}",
+                verifyResult.IsIdentical,
+                confidence);
+
+            return confidence;
+        }
+        catch (RequestFailedException ex)
+        {
+            _logger.LogError(ex, "Azure Face API request failed: {Message}", ex.Message);
+            // Re-throw the original exception to preserve error details for caller
             throw;
         }
     }
@@ -64,8 +166,8 @@ public class FaceVerify
         double similarity = 1.0 - sizeDifference;
         
         // Add some randomness to simulate real API behavior
-        var random = new Random();
-        double noise = (random.NextDouble() - 0.5) * 0.1; // ±5%
+        // Use Random.Shared (thread-safe) instead of new Random() for better randomness
+        double noise = (Random.Shared.NextDouble() - 0.5) * 0.1; // ±5%
         
         double confidence = Math.Max(0.0, Math.Min(1.0, 0.75 + noise)); // Base confidence around 75%
         
