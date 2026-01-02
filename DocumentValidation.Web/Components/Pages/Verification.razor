@@ -260,14 +260,25 @@
         {
             if (cameraModule != null)
             {
-                await cameraModule.InvokeVoidAsync("startCamera");
+                // Set camera active state first to trigger render of video/canvas elements
                 isCameraActive = true;
                 StateHasChanged();
+                
+                // Wait for the next render cycle to ensure DOM elements are present
+                await InvokeAsync(async () =>
+                {
+                    // Small delay to ensure DOM is updated
+                    await Task.Delay(100);
+                    await cameraModule.InvokeVoidAsync("startCamera");
+                });
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error starting camera: {ex.Message}");
+            // Reset camera active state on error
+            isCameraActive = false;
+            StateHasChanged();
         }
     }
 
