@@ -258,6 +258,9 @@
     private IJSObjectReference? cameraModule;
     private string? errorMessage = null;
     private bool isCapturing = false;
+    
+    // Constants for capture timing
+    private const int CaptureDelayMs = 200; // Delay between burst capture frames
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -339,8 +342,10 @@
                     {
                         var imageDataUrl = await cameraModule.InvokeAsync<string>("captureFrame");
                         
-                        // Validate and convert base64 data URL to bytes
-                        if (string.IsNullOrEmpty(imageDataUrl) || !imageDataUrl.Contains(','))
+                        // Validate data URL format (should be "data:image/jpeg;base64,...")
+                        if (string.IsNullOrEmpty(imageDataUrl) || 
+                            !imageDataUrl.StartsWith("data:image/") ||
+                            !imageDataUrl.Contains(","))
                         {
                             throw new InvalidOperationException("Invalid image data received from camera.");
                         }
@@ -352,7 +357,7 @@
                         // Small delay between captures for burst mode
                         if (i < 4)
                         {
-                            await Task.Delay(200);
+                            await Task.Delay(CaptureDelayMs);
                         }
                     }
                     catch (TaskCanceledException ex)
