@@ -155,35 +155,36 @@ public class FaceVerify
         catch (RequestFailedException ex)
         {
             // Check if this is an UnsupportedFeature error (403) indicating missing approval
-            // for Verification feature. We check both the status code and error codes to be robust.
+            // for Verification feature. We check the status code and multiple error indicators for robustness.
             // Note: Azure returns ErrorCode "InvalidRequest" with innererror code "UnsupportedFeature"
-            bool isUnsupportedFeatureError = ex.Status == HttpStatusForbidden && 
-                (ex.ErrorCode == ErrorCodeInvalidRequest || ex.ErrorCode == ErrorCodeUnsupportedFeature);
-            
-            // Additional check: message contains "UnsupportedFeature" as a fallback
-            // This makes detection more robust even if error codes change
-            bool messageIndicatesUnsupportedFeature = ex.Message != null && 
-                ex.Message.Contains(ErrorCodeUnsupportedFeature, StringComparison.OrdinalIgnoreCase);
-            
-            if (isUnsupportedFeatureError || (ex.Status == HttpStatusForbidden && messageIndicatesUnsupportedFeature))
+            if (ex.Status == HttpStatusForbidden)
             {
-                var errorMessage = string.Join("\n",
-                    "Azure Face API Verification feature is not approved for this resource.",
-                    "The Verification feature requires special approval from Microsoft due to Responsible AI policies.",
-                    $"Please apply for access at {FaceApiApprovalUrl}");
+                bool hasUnsupportedFeatureErrorCode = 
+                    ex.ErrorCode == ErrorCodeInvalidRequest || ex.ErrorCode == ErrorCodeUnsupportedFeature;
+                
+                bool messageIndicatesUnsupportedFeature = ex.Message != null && 
+                    ex.Message.Contains(ErrorCodeUnsupportedFeature, StringComparison.OrdinalIgnoreCase);
+                
+                if (hasUnsupportedFeatureErrorCode || messageIndicatesUnsupportedFeature)
+                {
+                    var errorMessage = string.Join("\n",
+                        "Azure Face API Verification feature is not approved for this resource.",
+                        "The Verification feature requires special approval from Microsoft due to Responsible AI policies.",
+                        $"Please apply for access at {FaceApiApprovalUrl}");
 
-                if (_fallbackToSimulatedOnUnsupportedFeature)
-                {
-                    _logger.LogWarning(
-                        ex,
-                        "{ErrorMessage}. Falling back to simulated verification.", 
-                        errorMessage);
-                    return await SimulateVerificationAsync(selfieImage, idImage);
-                }
-                else
-                {
-                    _logger.LogError(ex, errorMessage);
-                    throw new InvalidOperationException(errorMessage, ex);
+                    if (_fallbackToSimulatedOnUnsupportedFeature)
+                    {
+                        _logger.LogWarning(
+                            ex,
+                            "{ErrorMessage}. Falling back to simulated verification.", 
+                            errorMessage);
+                        return await SimulateVerificationAsync(selfieImage, idImage);
+                    }
+                    else
+                    {
+                        _logger.LogError(ex, errorMessage);
+                        throw new InvalidOperationException(errorMessage, ex);
+                    }
                 }
             }
 
