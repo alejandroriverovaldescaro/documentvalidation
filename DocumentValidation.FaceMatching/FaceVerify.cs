@@ -10,6 +10,11 @@ namespace DocumentValidation.FaceMatching;
 /// </summary>
 public class FaceVerify
 {
+    private const int HttpStatusForbidden = 403;
+    private const string ErrorCodeInvalidRequest = "InvalidRequest";
+    private const string ErrorCodeUnsupportedFeature = "UnsupportedFeature";
+    private const string FaceApiApprovalUrl = "https://aka.ms/facerecognition";
+
     private readonly ILogger<FaceVerify> _logger;
     private readonly VerificationMethod _verificationMethod;
     private readonly string? _faceApiEndpoint;
@@ -152,22 +157,20 @@ public class FaceVerify
             // Check if this is an UnsupportedFeature error (403) indicating missing approval
             // for Verification feature. We check both the status code and error codes to be robust.
             // Note: Azure returns ErrorCode "InvalidRequest" with innererror code "UnsupportedFeature"
-            bool isUnsupportedFeatureError = ex.Status == 403 && 
-                (ex.ErrorCode == "InvalidRequest" || ex.ErrorCode == "UnsupportedFeature");
+            bool isUnsupportedFeatureError = ex.Status == HttpStatusForbidden && 
+                (ex.ErrorCode == ErrorCodeInvalidRequest || ex.ErrorCode == ErrorCodeUnsupportedFeature);
             
             // Additional check: message contains "UnsupportedFeature" as a fallback
             // This makes detection more robust even if error codes change
             bool messageIndicatesUnsupportedFeature = ex.Message != null && 
-                ex.Message.Contains("UnsupportedFeature", StringComparison.OrdinalIgnoreCase);
+                ex.Message.Contains(ErrorCodeUnsupportedFeature, StringComparison.OrdinalIgnoreCase);
             
-            if (isUnsupportedFeatureError || (ex.Status == 403 && messageIndicatesUnsupportedFeature))
+            if (isUnsupportedFeatureError || (ex.Status == HttpStatusForbidden && messageIndicatesUnsupportedFeature))
             {
-                const string approvalUrl = "https://aka.ms/facerecognition";
-                var errorMessage = $"""
-                    Azure Face API Verification feature is not approved for this resource.
-                    The Verification feature requires special approval from Microsoft due to Responsible AI policies.
-                    Please apply for access at {approvalUrl}
-                    """;
+                var errorMessage = string.Join("\n",
+                    "Azure Face API Verification feature is not approved for this resource.",
+                    "The Verification feature requires special approval from Microsoft due to Responsible AI policies.",
+                    $"Please apply for access at {FaceApiApprovalUrl}");
 
                 if (_fallbackToSimulatedOnUnsupportedFeature)
                 {
