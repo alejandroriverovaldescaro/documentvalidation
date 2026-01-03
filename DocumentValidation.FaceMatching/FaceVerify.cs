@@ -151,6 +151,7 @@ public class FaceVerify
         {
             // Check if this is an UnsupportedFeature error (403) indicating missing approval
             // for Verification feature. We check both the status code and error codes to be robust.
+            // Note: Azure returns ErrorCode "InvalidRequest" with innererror code "UnsupportedFeature"
             bool isUnsupportedFeatureError = ex.Status == 403 && 
                 (ex.ErrorCode == "InvalidRequest" || ex.ErrorCode == "UnsupportedFeature");
             
@@ -163,8 +164,8 @@ public class FaceVerify
             {
                 const string approvalUrl = "https://aka.ms/facerecognition";
                 var errorMessage = $"""
-                    Azure Face API Verification feature is not approved for this resource. 
-                    The Verification feature requires special approval from Microsoft due to Responsible AI policies. 
+                    Azure Face API Verification feature is not approved for this resource.
+                    The Verification feature requires special approval from Microsoft due to Responsible AI policies.
                     Please apply for access at {approvalUrl}
                     """;
 
