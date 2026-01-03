@@ -165,6 +165,10 @@ public class FaceVerify
                 bool messageIndicatesUnsupportedFeature = ex.Message != null && 
                     ex.Message.Contains(ErrorCodeUnsupportedFeature, StringComparison.OrdinalIgnoreCase);
                 
+                _logger.LogDebug(
+                    "Detected 403 error. ErrorCode: {ErrorCode}, HasUnsupportedFeatureCode: {HasCode}, MessageContainsUnsupportedFeature: {HasMessage}",
+                    ex.ErrorCode, hasUnsupportedFeatureErrorCode, messageIndicatesUnsupportedFeature);
+                
                 if (hasUnsupportedFeatureErrorCode || messageIndicatesUnsupportedFeature)
                 {
                     var errorMessage = string.Join("\n",
