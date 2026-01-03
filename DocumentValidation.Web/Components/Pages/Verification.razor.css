@@ -14,7 +14,7 @@
     max-width: 640px;
     width: 100%;
     overflow: hidden;
-    animation: slideUp 0.4s var(--curve-decelerate, ease-out);
+    animation: slideUp var(--duration-slower, 400ms) var(--curve-decelerate, ease-out);
     border: 1px solid var(--neutral-background-5, #e0e0e0);
 }
 
@@ -76,7 +76,7 @@
 .icon {
     font-size: 64px;
     display: inline-block;
-    animation: float 3s ease-in-out infinite;
+    animation: float 3s var(--curve-easy-ease, ease) infinite;
 }
 
 @keyframes float {

@@ -8,7 +8,7 @@
     --neutral-foreground-1: #242424;
     --neutral-foreground-2: #424242;
     --neutral-foreground-3: #616161;
-    --neutral-foreground-disabled: #bdbdbd;
+    --neutral-foreground-disabled: #BDBDBD;
     
     --neutral-background-1: #ffffff;
     --neutral-background-2: #fafafa;
@@ -317,6 +317,7 @@ p {
 }
 
 @keyframes fluent-spin {
+    from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
