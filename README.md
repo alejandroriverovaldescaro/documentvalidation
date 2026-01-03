@@ -171,6 +171,8 @@ services.AddFaceMatching(options =>
 });
 ```
 
+**Note:** Azure Face API Verification requires special approval from Microsoft. Apply at https://aka.ms/facerecognition. Without approval, the system automatically falls back to simulated verification with a logged warning.
+
 Both methods use the same API surface, making it easy to switch between testing and production.
 
 ## 🧪 Testing

@@ -14,17 +14,20 @@ public class FaceVerify
     private readonly VerificationMethod _verificationMethod;
     private readonly string? _faceApiEndpoint;
     private readonly string? _faceApiKey;
+    private readonly bool _fallbackToSimulatedOnUnsupportedFeature;
 
     public FaceVerify(
         ILogger<FaceVerify> logger, 
         VerificationMethod verificationMethod = VerificationMethod.Simulated,
         string? faceApiEndpoint = null, 
-        string? faceApiKey = null)
+        string? faceApiKey = null,
+        bool fallbackToSimulatedOnUnsupportedFeature = true)
     {
         _logger = logger;
         _verificationMethod = verificationMethod;
         _faceApiEndpoint = faceApiEndpoint;
         _faceApiKey = faceApiKey;
+        _fallbackToSimulatedOnUnsupportedFeature = fallbackToSimulatedOnUnsupportedFeature;
     }
 
     /// <summary>
@@ -146,6 +149,33 @@ public class FaceVerify
         }
         catch (RequestFailedException ex)
         {
+            // Check if this is an UnsupportedFeature error (403) indicating missing approval
+            // for Verification feature
+            if (ex.Status == 403 && 
+                (ex.ErrorCode == "InvalidRequest" || ex.ErrorCode == "UnsupportedFeature") &&
+                ex.Message.Contains("UnsupportedFeature"))
+            {
+                const string approvalUrl = "https://aka.ms/facerecognition";
+                var errorMessage = 
+                    "Azure Face API Verification feature is not approved for this resource. " +
+                    $"The Verification feature requires special approval from Microsoft due to Responsible AI policies. " +
+                    $"Please apply for access at {approvalUrl}";
+
+                if (_fallbackToSimulatedOnUnsupportedFeature)
+                {
+                    _logger.LogWarning(
+                        ex,
+                        "{ErrorMessage}. Falling back to simulated verification.", 
+                        errorMessage);
+                    return await SimulateVerificationAsync(selfieImage, idImage);
+                }
+                else
+                {
+                    _logger.LogError(ex, errorMessage);
+                    throw new InvalidOperationException(errorMessage, ex);
+                }
+            }
+
             _logger.LogError(ex, "Azure Face API request failed: {Message}", ex.Message);
             // Re-throw the original exception to preserve error details for caller
             throw;

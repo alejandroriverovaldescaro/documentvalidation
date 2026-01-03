@@ -83,7 +83,31 @@ services.AddFaceMatching(options =>
     // Optional: Configure burst capture
     options.BurstFrameCount = 10;
     options.FrameDelayMs = 100;
+    
+    // Optional: Control fallback behavior when verification feature is not approved
+    // Default is true - falls back to simulated verification with a warning
+    options.FallbackToSimulatedOnUnsupportedFeature = true;
 });
+```
+
+**Important: Azure Face API Approval Required**
+
+The Azure Face API Verification feature requires special approval from Microsoft due to Responsible AI policies for biometric identification. If you attempt to use this feature without approval, you'll receive a 403 error.
+
+**What happens when approval is missing:**
+- By default (`FallbackToSimulatedOnUnsupportedFeature = true`), the system automatically falls back to simulated verification with a warning logged
+- If you set `FallbackToSimulatedOnUnsupportedFeature = false`, an `InvalidOperationException` will be thrown with instructions
+
+**How to get approval:**
+1. Apply for access at: https://aka.ms/facerecognition
+2. Microsoft will review your use case based on Responsible AI principles
+3. Once approved, your Azure Face API resource will support the Verification feature
+
+**Error you'll see without approval:**
+```
+Azure Face API Verification feature is not approved for this resource.
+The Verification feature requires special approval from Microsoft due to Responsible AI policies.
+Please apply for access at https://aka.ms/facerecognition
 ```
 
 ### 2. Verify Identity

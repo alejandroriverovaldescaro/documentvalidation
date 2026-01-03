@@ -30,7 +30,8 @@ public static class ServiceCollectionExtensions
                 logger, 
                 options.VerificationMethod,
                 options.FaceApiEndpoint, 
-                options.FaceApiKey);
+                options.FaceApiKey,
+                options.FallbackToSimulatedOnUnsupportedFeature);
         });
 
         services.AddSingleton<FaceMatchingService>();

@@ -45,4 +45,11 @@ public class FaceMatchingOptions
     /// Delay between frames in milliseconds (default: 100ms for ~1 second total)
     /// </summary>
     public int FrameDelayMs { get; set; } = 100;
+
+    /// <summary>
+    /// Whether to automatically fall back to simulated verification if Azure Face API 
+    /// verification feature is not approved (403 UnsupportedFeature error).
+    /// Default: true. Set to false to throw exception instead.
+    /// </summary>
+    public bool FallbackToSimulatedOnUnsupportedFeature { get; set; } = true;
 }
