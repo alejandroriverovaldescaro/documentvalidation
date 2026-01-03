@@ -150,16 +150,23 @@ public class FaceVerify
         catch (RequestFailedException ex)
         {
             // Check if this is an UnsupportedFeature error (403) indicating missing approval
-            // for Verification feature
-            if (ex.Status == 403 && 
-                (ex.ErrorCode == "InvalidRequest" || ex.ErrorCode == "UnsupportedFeature") &&
-                ex.Message.Contains("UnsupportedFeature"))
+            // for Verification feature. We check both the status code and error codes to be robust.
+            bool isUnsupportedFeatureError = ex.Status == 403 && 
+                (ex.ErrorCode == "InvalidRequest" || ex.ErrorCode == "UnsupportedFeature");
+            
+            // Additional check: message contains "UnsupportedFeature" as a fallback
+            // This makes detection more robust even if error codes change
+            bool messageIndicatesUnsupportedFeature = ex.Message != null && 
+                ex.Message.Contains("UnsupportedFeature", StringComparison.OrdinalIgnoreCase);
+            
+            if (isUnsupportedFeatureError || (ex.Status == 403 && messageIndicatesUnsupportedFeature))
             {
                 const string approvalUrl = "https://aka.ms/facerecognition";
-                var errorMessage = 
-                    "Azure Face API Verification feature is not approved for this resource. " +
-                    $"The Verification feature requires special approval from Microsoft due to Responsible AI policies. " +
-                    $"Please apply for access at {approvalUrl}";
+                var errorMessage = $"""
+                    Azure Face API Verification feature is not approved for this resource. 
+                    The Verification feature requires special approval from Microsoft due to Responsible AI policies. 
+                    Please apply for access at {approvalUrl}
+                    """;
 
                 if (_fallbackToSimulatedOnUnsupportedFeature)
                 {
