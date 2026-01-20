@@ -84,7 +84,7 @@ public class FaceVerify
             // Detect faces in both images
             _logger.LogDebug("Detecting face in selfie image");
             var selfieData = new BinaryData(selfieImage);
-            var selfieDetectResponse = await client.DetectAsync(
+             var selfieDetectResponse = await client.DetectAsync(
                 selfieData,
                 FaceDetectionModel.Detection03,
                 FaceRecognitionModel.Recognition04,
