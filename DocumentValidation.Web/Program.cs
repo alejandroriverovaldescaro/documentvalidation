@@ -38,13 +38,13 @@ builder.Services.AddServerSideBlazor()
 builder.Services.AddFaceMatching(options =>
 {
     // Default to simulated verification for demo
-    options.VerificationMethod = VerificationMethod.Simulated;
-    
+    //options.VerificationMethod = VerificationMethod.Simulated;
+
     // For production with Azure Face API, uncomment and configure:
-    // options.VerificationMethod = VerificationMethod.AzureFaceAPI;
-    // options.FaceApiEndpoint = builder.Configuration["FaceApi:Endpoint"];
-    // options.FaceApiKey = builder.Configuration["FaceApi:Key"];
-    
+    options.VerificationMethod = VerificationMethod.AzureFaceAPI;
+    options.FaceApiEndpoint = builder.Configuration["FaceApi:Endpoint"];
+    options.FaceApiKey = builder.Configuration["FaceApi:Key"];
+
     options.BurstFrameCount = 5;
     options.FrameDelayMs = 200;
 });
