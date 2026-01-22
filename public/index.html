@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Azure Face Liveness Demo</title>
+  <style>
+    body { font-family: Arial; margin: 2em; }
+    .block { margin: 1em 0; }
+  </style>
+</head>
+<body>
+  <h1>Face Liveness Verification</h1>
+  <div class="block">
+    <video id="webcam" width="320" height="240" autoplay></video><br>
+    <button id="capture">Capture Selfie</button>
+    <canvas id="selfieCanvas" width="320" height="240" style="display: none;"></canvas>
+    <div id="livenessStatus"></div>
+  </div>
+
+  <div class="block">
+    <label>Upload ID Document (passport/ID):</label>
+    <input type="file" id="idImage" accept="image/*" />
+    <img id="idPreview" width="320" style="display: none;"/>
+  </div>
+
+  <div class="block">
+    <button id="verifyBtn">Verify Liveness & Document</button>
+    <div id="result"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,249 +1,34 @@
-# Document Validation - Face Matching Pipeline
+# Azure AI Face Liveness & Document Verification Demo
 
-A lightweight, production-ready face matching system for identity verification. This repository implements an improved "selfie vs photo ID" face matching pipeline designed to maximize user success rates while maintaining security.
+## Setup
 
-## 🎯 Project Goals
+1. Install dependencies:
 
-- **User-Friendly**: Simple "look at the camera" instruction - no technical requirements
-- **Reliable**: Smart frame selection and normalization increase match success
-- **Maintainable**: Clean, modular code with minimal dependencies
-- **Production-Ready**: Includes logging, testing, and monitoring capabilities
+   ```bash
+   npm install express multer axios dotenv
+   ```
 
-## 🚀 Features
+2. Copy `.env.example` to `.env` and enter your Azure Face API endpoint and key:
 
-### Blazor Web Application
-- **Modern UI**: Clean, responsive interface with gradient design
-- **Guided Workflow**: Step-by-step verification process
-- **Real-time Results**: Instant face matching with confidence scores
-- **Mobile-Friendly**: Responsive design for all devices
+   ````
+   AZURE_FACE_ENDPOINT=https://<your-face-api-endpoint>.cognitiveservices.azure.com
+   AZURE_FACE_KEY=<your-face-api-key>
+   ```
 
-### Intelligent Frame Capture
-- Captures 5-10 frames in burst mode (~1 second)
-- Automatically selects best frame based on:
-  - **Face size** (larger = closer to camera)
-  - **Sharpness** (Laplacian variance for focus detection)
-  - **Frontal pose** (horizontal eye alignment)
+3. Start the app:
 
-### Face Normalization
-- Detects faces in both selfie and ID photo
-- Crops tightly to face region with padding
-- Aligns faces (horizontal eye alignment)
-- Resizes to standard dimensions (256x256)
+   ```bash
+   node app.js
+   ```
 
-### Smart Decision Logic
-Uses confidence bands instead of hard thresholds:
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-| Score Range | Decision | Action |
-|-------------|----------|--------|
-| ≥ 0.80 | Auto-Accept | Process immediately |
-| 0.60-0.79 | Accept | May queue for soft review |
-| 0.45-0.59 | Retry | Ask user to retry |
-| < 0.45 | Reject | Manual review or reject |
+## Usage
 
-## 📦 Project Structure
+- Use webcam to capture a live selfie (for liveness detection)
+- Upload a passport or ID document photo
+- Click 'Verify' to check liveness and match the live face against the document's face
 
-```
-documentvalidation/
-├── DocumentValidation.FaceMatching/       # Core library
-│   ├── Models/                            # Data models
-│   ├── FaceCapture.cs                     # Burst capture & selection
-│   ├── FaceNormalize.cs                   # Detection & normalization
-│   ├── FaceVerify.cs                      # Face comparison API
-│   ├── VerificationDecision.cs            # Decision logic
-│   ├── FaceMatchingService.cs             # Main orchestrator
-│   └── README.md                          # Detailed documentation
-├── DocumentValidation.FaceMatching.Tests/ # Unit tests
-│   └── VerificationDecisionTests.cs       # Decision logic tests
-├── DocumentValidation.Web/                # Blazor Server web app
-│   ├── Components/Pages/                  # Razor pages
-│   ├── Program.cs                         # Application setup
-│   └── README.md                          # Web app documentation
-├── DocumentValidation.Example/            # Example console app
-│   └── Program.cs                         # Usage demonstration
-└── README.md                              # This file
-```
+---
 
-## 🏃 Quick Start
-
-### Prerequisites
-- .NET 8.0 SDK or later
-- (Optional) Azure Face API credentials
-
-### 1. Clone and Build
-
-```bash
-git clone https://github.com/alejandroriverovaldescaro/documentvalidation.git
-cd documentvalidation
-dotnet build
-```
-
-### 2. Run Tests
-
-```bash
-dotnet test
-```
-
-All tests should pass:
-```
-Test Run Successful.
-Total tests: 14
-     Passed: 14
-```
-
-### 3. Run Web Application
-
-```bash
-cd DocumentValidation.Web
-dotnet run
-```
-
-Open your browser to `http://localhost:5000` to access the modern web interface for identity verification.
-
-### 4. Run Console Example
-
-```bash
-cd DocumentValidation.Example
-dotnet run
-```
-
-You should see output showing the verification pipeline in action with simulated images.
-
-## 💻 Usage
-
-### Basic Integration
-
-```csharp
-using DocumentValidation.FaceMatching;
-using Microsoft.Extensions.DependencyInjection;
-
-// Setup
-var services = new ServiceCollection();
-services.AddFaceMatching();
-services.AddLogging();
-
-var serviceProvider = services.BuildServiceProvider();
-var faceMatchingService = serviceProvider.GetRequiredService<FaceMatchingService>();
-
-// Verify
-var selfieFrames = GetCameraFrames(); // Your camera capture logic
-var idPhoto = LoadIdPhoto();          // Load from storage
-
-var result = await faceMatchingService.VerifyIdentityAsync(selfieFrames, idPhoto);
-
-// Handle result
-if (result.Decision == VerificationDecision.AutoAccept)
-{
-    // Process verification
-}
-```
-
-See [DocumentValidation.FaceMatching/README.md](DocumentValidation.FaceMatching/README.md) for detailed documentation.
-
-## 🔧 Configuration
-
-### Verification Methods
-
-The library supports two verification methods:
-
-#### 1. Simulated Verification (Default)
-Perfect for testing and development without API credentials:
-
-```csharp
-services.AddFaceMatching(options =>
-{
-    // VerificationMethod.Simulated is the default
-    options.BurstFrameCount = 10;
-    options.FrameDelayMs = 100;
-});
-```
-
-#### 2. Azure Face API (Production)
-For production deployments with real face recognition:
-
-```csharp
-services.AddFaceMatching(options =>
-{
-    options.VerificationMethod = VerificationMethod.AzureFaceAPI;
-    options.FaceApiEndpoint = "https://your-endpoint.cognitiveservices.azure.com/";
-    options.FaceApiKey = "your-api-key";
-    options.BurstFrameCount = 10;
-    options.FrameDelayMs = 100;
-});
-```
-
-Both methods use the same API surface, making it easy to switch between testing and production.
-
-## 🧪 Testing
-
-The project includes comprehensive unit tests for decision logic:
-
-```bash
-dotnet test --logger "console;verbosity=detailed"
-```
-
-Tests cover:
-- All threshold boundaries
-- Edge cases (0.0, 1.0, exact thresholds)
-- Decision correctness
-- Message validation
-
-## 📊 Design Principles
-
-### 1. User-Centric
-- **Simple instructions**: "Look at the camera"
-- **Automatic quality**: System selects best frame
-- **Helpful feedback**: Clear retry messages
-
-### 2. Pragmatic
-- **No ML training**: Uses existing APIs
-- **Deterministic**: Clear, testable logic
-- **Low latency**: ~1 second total time
-
-### 3. Production-Ready
-- **Logging**: All decisions logged with confidence scores
-- **Testing**: Comprehensive test coverage
-- **Monitoring**: Track success/retry/reject rates
-- **Maintainable**: Clean, documented code
-
-## 🔒 Security Considerations
-
-- Validate input image sizes and formats
-- Rate limit API calls
-- Store verification logs for audit
-- Run security scans (CodeQL recommended)
-- Never store raw biometric data
-
-## 📈 Monitoring
-
-Track these metrics in production:
-- **Auto-accept rate**: Target > 60%
-- **Accept rate**: Target 20-30%
-- **Retry rate**: Target < 15%
-- **Reject rate**: Target < 5%
-- **Average confidence**: Target > 0.70
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all tests pass
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details.
-
-## 📞 Support
-
-For issues or questions:
-- Open an issue on GitHub
-- Review documentation in [DocumentValidation.FaceMatching/README.md](DocumentValidation.FaceMatching/README.md)
-
-## 🙏 Acknowledgments
-
-Built with:
-- [ImageSharp](https://github.com/SixLabors/ImageSharp) - Image processing
-- [Azure Face API](https://azure.microsoft.com/en-us/services/cognitive-services/face/) - Face recognition (optional)
-- .NET 8.0 - Runtime platform
+**Note:** The actual Azure Face Liveness API integration should replace the `detectLiveness()` function in `services/azureFaceService.js`. The Face API (`detectFace` and `verifyFaces`) must be enabled in your Azure account.
